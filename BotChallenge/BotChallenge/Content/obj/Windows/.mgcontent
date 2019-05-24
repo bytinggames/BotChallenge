@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Shooter/Textures/bot.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/background.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/food.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/snake_body_part.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/snake_head_down.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/snake_head_left.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/snake_head_right.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Snake/Textures/snake_head_up.png</File>
+    <File>C:/Users/Julian/Documents/Visual Studio 2015/Projects/BotChallenge/BotChallenge/BotChallenge/Content/Shooter/Textures/map.png</File>
+  </SourceFiles>
+</SourceFileCollection>
