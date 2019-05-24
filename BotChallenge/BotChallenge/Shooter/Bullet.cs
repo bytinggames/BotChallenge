@@ -120,13 +120,16 @@ namespace BotChallenge.Shooter
                         CollisionResult cr2 = mask.DistToPolygon(new M_Rectangle(x, y, 1, 1).ToPolygon(), velocity);
                         cr.AddCollisionResult(cr2, velocity);
                     });
-                    for (int i = 0; i < env.bots.Length; i++)
+                    if (!Collectible)
                     {
-                        if (env.bots[i].Alive)
+                        for (int i = 0; i < env.bots.Length; i++)
                         {
-                            CollisionResult cr2 = mask.DistToCircle(env.bots[i].mask, velocity);
-                            if (cr.AddCollisionResult(cr2, velocity))
-                                botHit = env.bots[i];
+                            if (env.bots[i].Alive)
+                            {
+                                CollisionResult cr2 = mask.DistToCircle(env.bots[i].mask, velocity);
+                                if (cr.AddCollisionResult(cr2, velocity))
+                                    botHit = env.bots[i];
+                            }
                         }
                     }
 
