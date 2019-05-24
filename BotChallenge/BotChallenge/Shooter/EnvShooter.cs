@@ -218,7 +218,7 @@ namespace BotChallenge.Shooter
             float[] scores = new float[bots.Length];
             for (int i = 0; i < scores.Length; i++)
             {
-                scores[i] = bots[i].kills;
+                scores[i] = bots[i].damageDealt;
             }
             return scores;// bots.Select(f => (float)f.wins).Cast<float>().ToArray();
         }
