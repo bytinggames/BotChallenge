@@ -11,7 +11,7 @@ namespace BotChallenge
     public abstract class Env
     {
         private bool visible;
-        public static Random constRand = new Random(0);
+        public static Random constRand = new Random();
 
         public bool Visible
         {

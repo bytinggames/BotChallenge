@@ -15,7 +15,8 @@ namespace BotChallenge.Shooter
         int width = 20;
         int height = 20;
         bool loadFromTexture = false;
-        public const int TOTALFRAMES = 60 * 60 * 3; // 3min
+        public bool LoadFromTexture => loadFromTexture;
+        public const int TOTALFRAMES = 60 * 60 * 2; // 2min
 
 
         public abstract class Bot
@@ -39,7 +40,7 @@ namespace BotChallenge.Shooter
             }
             internal float health;
             internal int ammo;
-            internal EnvShooter env;
+            public EnvShooter env;
             internal M_Circle mask;
             private int id;
             internal float charge;
@@ -170,12 +171,17 @@ namespace BotChallenge.Shooter
 
         int frame = 0;
 
+        public int Frame => frame;
+
         bool[,] map;
         internal Bot[] bots;
         public int Width { get { return width; } }
         public int Height { get { return height; } }
-        internal List<Bullet> bullets;
+        List<Bullet> bullets;
         GameBase game;
+
+        public Bullet[] Bullets;
+
 
         bool gameEnd;
 
@@ -190,7 +196,6 @@ namespace BotChallenge.Shooter
         {
             Collision.minDist = 0.01f;
             CollisionResult.minDist = 0;
-
 
             this.bots = GetBots<Bot>(botTypes);
         }
@@ -299,6 +304,8 @@ namespace BotChallenge.Shooter
             }
             else
             {
+
+                Bullets = bullets.ToArray();
 
                 Action[] actions = new Action[bots.Length];
 

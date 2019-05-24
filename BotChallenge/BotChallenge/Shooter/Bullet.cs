@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace BotChallenge.Shooter
 {
-    internal class Bullet
+    public class Bullet
     {
         public const float RADIUS = 0.2f;
         public const float DAMAGE = 1f;
@@ -32,6 +32,13 @@ namespace BotChallenge.Shooter
         private int id;
         public int Id { get { return id; } }
         public bool Collectible { get { return id == -1; } }
+
+        public Vector2 Pos => pos;
+        public Vector2 LastPos => lastPos;
+        public Vector2 Velocity => velocity;
+        public Color Color => color;
+        public M_Circle Mask => mask;
+
 
         public Bullet(Vector2 pos, Vector2 velocity, int id, Color color, EnvShooter env)
         {
