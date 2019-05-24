@@ -44,8 +44,14 @@ namespace BotChallenge
             this.env = env;
 
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth *= 2;
-            graphics.PreferredBackBufferHeight *= 2;
+            //graphics.PreferredBackBufferWidth *= 2;
+            //graphics.PreferredBackBufferHeight *= 2;
+
+            graphics.PreferredBackBufferWidth = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.75f);
+            graphics.PreferredBackBufferHeight = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.75f);
+            //graphics.ToggleFullScreen();
+
+
             Content.RootDirectory = "Content";
 
             IsMouseVisible = true;
@@ -54,6 +60,9 @@ namespace BotChallenge
 
             windowResX = resX;
             windowResY = resY;
+
+
+            //ToggleFullscreen();
         }
 
         protected override void Initialize()
@@ -87,7 +96,7 @@ namespace BotChallenge
         {
             Input.Update();
 
-            if (Input.f11.pressed)
+            if (Input.f11.pressed || Input.f.pressed)
                 ToggleFullscreen();
 
             if (Input.esc.pressed)
