@@ -10,18 +10,71 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Shooter
 {
-    class Dominik : EnvShooter.Bot
+    class Dominik2 : EnvShooter.Bot
 
     {
 
         protected override Color GetColor()
         {
-            return Color.Aquamarine;
+            return Color.Yellow;
         }
 
-        public Dominik()
+        public Dominik2()
         {
             //Start
+        }
+
+        bool[] getDirection(Vector2 vec)
+        {
+            bool[] dir = new bool[4];
+
+            float wurzel = (float)(1f / Math.Sqrt(2));
+            float[] test = new float[8]{ Math.Abs(vec.X), Math.Abs(wurzel * (vec.X) + wurzel * (vec.Y)), Math.Abs(vec.Y), Math.Abs(-wurzel * (vec.X) + wurzel * (vec.Y)),
+                    Math.Abs(-vec.X), Math.Abs(-wurzel * (vec.X) - wurzel * (vec.Y)), Math.Abs(-vec.Y), Math.Abs(wurzel* (vec.X) - wurzel * (vec.Y))};
+
+            int ind = 0;
+            for (int i = 1; i < 8; i++)
+            {
+                if (test[i] < test[ind]) { ind = i; break; }
+            }
+
+            int fix = Env.constRand.Next(2);
+            switch (ind)
+            {
+                case 0:
+                    if (fix == 0) dir[0] = true;
+                    else dir[2] = true;
+                    break;
+                case 1:
+                    if (fix == 0) { dir[0] = true; dir[1] = true; }
+                    else { dir[2] = true; dir[3] = true; }
+                    break;
+                case 2:
+                    if (fix == 0) dir[1] = true;
+                    else dir[3] = true;
+                    break;
+                case 3:
+                    if (fix == 0) { dir[2] = true; dir[1] = true; }
+                    else { dir[0] = true; dir[3] = true; }
+                    break;
+                case 4:
+                    if (fix == 0) dir[2] = true; else dir[0] = true;
+                    break;
+                case 5:
+                    if (fix == 0) { dir[2] = true; dir[3] = true; }
+                    else { dir[0] = true; dir[1] = true; }
+                    break;
+                case 6:
+                    if (fix == 0) dir[3] = true; else dir[1] = true;
+                    break;
+                case 7:
+                    if (fix == 0) { dir[0] = true; dir[3] = true; }
+                    else { dir[2] = true; dir[1] = true; }
+                    break;
+                default:
+                    break;
+            }
+            return dir;
         }
 
         protected override EnvShooter.Action GetAction()
@@ -57,7 +110,43 @@ namespace Shooter
                 act.aim = (float) Math.Atan2(vec.Y,vec.X);
             }
 
-            if (enemies[ind_enemy].Charge > 0.0f) {
+
+
+            // Berechne nächste Bullet
+            bool bln_foundDanger = false;
+            int ind_nearestBullet = 0;
+
+            if (env.Bullets.Length > 1) {
+                for (int i = 1; i < env.Bullets.Length; i++){
+                    if (bln_foundDanger){
+                        if ((Vector2.Dot(env.Bullets[i].Velocity,env.Bullets[i].Pos - this.Pos) < 0) && 
+                            (env.Bullets[i].Velocity.Length() > 0.1f) &&
+                            (Vector2.Distance(env.Bullets[i].Pos, this.Pos) < Vector2.Distance(env.Bullets[ind_nearestBullet].Pos, this.Pos)))
+                        {
+                            ind_nearestBullet = i;
+                        }
+                    }
+                    else
+                    {
+                        if ((Vector2.Dot(env.Bullets[i].Velocity, env.Bullets[i].Pos - this.Pos) < 0) &&
+                            (env.Bullets[i].Velocity.Length() > 0.05f))
+                            {
+                                ind_nearestBullet = i;
+                                bln_foundDanger = true;
+                            }
+                    }
+                    
+                }
+            }
+
+            // wird eine Kugel gefährlich?
+            if (bln_foundDanger && (env.Bullets.Length > 0) && (Vector2.Distance(env.Bullets[ind_nearestBullet].Pos, this.Pos) < 5))
+            {
+                bool[] dir = getDirection(env.Bullets[ind_nearestBullet].Velocity);
+                act.right = dir[0]; act.down = dir[1]; act.left = dir[2]; act.up = dir[3];
+            }
+            // schießt ein Gegner gerade?
+            else if (enemies[ind_enemy].Charge > 0.0f) {
                 act.charge = false;
 
                 float wurzel = (float)(1f / Math.Sqrt(2));
@@ -110,7 +199,6 @@ namespace Shooter
             }
             else
             {
-
                 // collect bullets
                 int ind = 0;
                 if (env.Bullets.Length > 0)
