@@ -119,8 +119,8 @@ namespace Shooter
             if (env.Bullets.Length > 1) {
                 for (int i = 1; i < env.Bullets.Length; i++){
                     if (bln_foundDanger){
-                        if ((Math.Sqrt(env.Bullets[i].Velocity.X * env.Bullets[i].Velocity.X +
-                            env.Bullets[i].Velocity.Y * env.Bullets[i].Velocity.Y) > 0.05f) &&
+                        if ((Vector2.Dot(env.Bullets[i].Velocity,env.Bullets[i].Pos - this.Pos) < 0) && 
+                            (env.Bullets[i].Velocity.Length() > 0.1f) &&
                             (Vector2.Distance(env.Bullets[i].Pos, this.Pos) < Vector2.Distance(env.Bullets[ind_nearestBullet].Pos, this.Pos)))
                         {
                             ind_nearestBullet = i;
@@ -128,8 +128,8 @@ namespace Shooter
                     }
                     else
                     {
-                        if (Math.Sqrt(env.Bullets[i].Velocity.X * env.Bullets[i].Velocity.X +
-                            env.Bullets[i].Velocity.Y * env.Bullets[i].Velocity.Y) > 0.05f)
+                        if ((Vector2.Dot(env.Bullets[i].Velocity, env.Bullets[i].Pos - this.Pos) < 0) &&
+                            (env.Bullets[i].Velocity.Length() > 0.05f))
                             {
                                 ind_nearestBullet = i;
                                 bln_foundDanger = true;
