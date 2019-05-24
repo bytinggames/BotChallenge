@@ -12,6 +12,10 @@ namespace Shooter
 {
     class MyBot : EnvShooter.Bot
     {
+
+        EnvShooter.Action lastAction;
+
+
         protected override Color GetColor()
         {
             return Color.Gray;
@@ -26,7 +30,10 @@ namespace Shooter
         {
             //Loop
             
-            return new EnvShooter.Action()
+            //env.Bullets  - bullet array
+            //this. eigene variablen (this ist nicht benötigt)
+
+            lastAction = new EnvShooter.Action()
             {
                 right = false,
                 up = false,
@@ -35,6 +42,10 @@ namespace Shooter
                 charge = false,
                 aim = MathHelper.Pi
             };
+            
+
+
+            return lastAction;
         }
 
     }
