@@ -70,9 +70,10 @@ namespace BotChallenge.Shooter
             //visible for the bot programmer
             protected Bot[] enemies;
             protected bool[,] map;
-            protected float Charge { get { return charge; } }
-            protected Vector2 Pos { get { return _pos; } }
-            protected int Ammo { get { return ammo; } }
+            public float Charge { get { return charge; } }
+            public Vector2 Pos { get { return _pos; } }
+            public int Ammo { get { return ammo; } }
+            public float Health => health;
             protected Random rand;
 
             internal Action GetInternalAction()
