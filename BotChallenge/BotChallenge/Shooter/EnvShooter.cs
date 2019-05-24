@@ -217,12 +217,27 @@ namespace BotChallenge.Shooter
 
             float[] scores = new float[bots.Length];
 
-            
-
-            for (int i = 0; i < scores.Length; i++)
+            List<Bot> r = new List<Bot>();
+            for (int i = 0; i < bots.Length; i++)
             {
-                scores[i] = bots[i].damageDealt;
+                int j;
+                for (j = 0; j < r.Count; j++)
+                {
+                    if (bots[i].damageDealt < r[j].damageDealt)
+                        break;
+                }
+                r.Insert(j, bots[i]);
             }
+
+            for (int i = 0; i < r.Count; i++)
+            {
+                scores[r[i].Id] = i;
+            }
+
+            //for (int i = 0; i < scores.Length; i++)
+            //{
+            //    scores[i] = bots[i].damageDealt;
+            //}
             return scores;// bots.Select(f => (float)f.wins).Cast<float>().ToArray();
         }
         
