@@ -43,7 +43,7 @@ namespace Shooter
                 aim = MathHelper.Pi
             };
             
-
+            
 
             return lastAction;
         }

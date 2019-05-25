@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Shooter
 {
-    class Julian : EnvShooter.Bot
+    class Julian2 : EnvShooter.Bot
     {
         EnvShooter.Action action = new EnvShooter.Action()
         {
@@ -24,13 +24,15 @@ namespace Shooter
 
         protected override Color GetColor()
         {
-            return Color.Orange;
+            return Color.Orange * 0.5f;
         }
 
-        public Julian()
+        public Julian2()
         {
             //Start
         }
+
+        bool reverseDir = false;
 
         protected override EnvShooter.Action GetAction()
         {
@@ -73,12 +75,22 @@ namespace Shooter
 
 
 
+
+            //if (enemies.Any(f => f.Ammo == 0) || env.Frame > 5 * 60)
+            {
+                action.charge = true;
+            }
+
+            if (Charge >= 1f)
+                action.charge = false;
+
             Bullet nearestFriendly = null;
             float nearestFriendlyDist = -1f;
             Bullet nearestEnemy = null;
             float nearestEnemyDist = -1f;
-            bool normalEvasion = false;
+            bool bulletEvasion = false;
             bool anyFriendly = env.Bullets.Any(f => f.Collectible);
+            
             for (int i = 0; i < env.Bullets.Length; i++)
             {
                 dist = env.Bullets[i].Pos - Pos;
@@ -123,70 +135,135 @@ namespace Shooter
                             evade = -evade;
 
                         VelocityToAction(ref action, evade);
-                        normalEvasion = true;
+                        bulletEvasion = true;
+
+                        if (Charge > 0.7f)
+                            action.charge = false;
                         break;
                     }
                 }
             }
 
+            bool wallSlide = false;
 
-            if (enemies.Any(f => f.Ammo == 0) || env.Frame > 5 * 60)
+            if (!bulletEvasion && env.Bullets.Length == 0 && Ammo == 0)
             {
-                action.charge = true;
-            }
+                // emergency mode! -> evasion extreme
+                action.left = action.right = action.up = action.down = false;
 
-            if (Charge >= 1f)
-                action.charge = false;
 
-            float noobDist = -1f;
+                if (Pos.X < env.Width * border)
+                    action.right = true;
+                if (Pos.X > env.Width * (1 - border))
+                    action.left = true;
+                if (Pos.Y < env.Height * border)
+                    action.down = true;
+                if (Pos.Y > env.Height * (1 - border))
+                    action.up = true;
+                
+                bool u = action.up;
+                action.up = action.right;
+                action.right = action.down;
+                action.down = action.left;
+                action.left = u;
 
-            if (!normalEvasion)
-            {
-                EnvShooter.Bot nearestBot = null;
-                EnvShooter.Bot nearestNoob = null;
-                float botDist = -1f;
-                for (int i = 0; i < enemies.Length; i++)
+                Vector2 dir = new Vector2(action.up ? -1f : action.down ? 1f : 0, action.right ? 1f : action.left ? -1f : 0f);
+
+                if (rand.Next(60) == 0 && reverseDir != Vector2.Dot(dir, enemies[0].Pos - Pos) > 0f)
+                    reverseDir = !reverseDir;
+
+                    if (reverseDir) 
                 {
-                    float d = (Pos - enemies[i].Pos).Length();
-                    if (enemies[i].Ammo > 0)
+                    bool a = action.up;
+                    action.up = action.down;
+                    action.down = a;
+
+                    a = action.right;
+                    action.right = action.left;
+                    action.left = a;
+                }
+
+                /*
+                if (action.right)
+                {
+
+
+                    if (action.up)
+                        action.left = true;
+                    else
+                        action.up = true;
+                }
+
+                if (Pos.Y > env.Height * (1 - border))
+                    action.right = true;
+                else if (Pos.Y < env.Height * border)
+                    action.left = true;
+                else if (Pos.X > env.Width * (1 - border))
+                    action.up = true;
+                else if (Pos.X < env.Width * border)
+                    action.down = true;*/
+
+
+                if (action.right || action.left || action.up || action.down)
+                    wallSlide = true;
+            }
+            
+            if (!wallSlide)
+            {
+                float noobDist = -1f;
+
+                if (!bulletEvasion)
+                {
+                    EnvShooter.Bot nearestBot = null;
+                    EnvShooter.Bot nearestNoob = null;
+                    float botDist = -1f;
+                    for (int i = 0; i < enemies.Length; i++)
                     {
-                        if (d < 6f && (botDist == -1f || d < botDist))
+                        float d = (Pos - enemies[i].Pos).Length();
+
+                        if (enemies[i].Ammo > 0)
                         {
-                            nearestBot = enemies[i];
-                            botDist = d;
+                            if ((d < 10f || (enemies[i].Charge > 0 && d < 15f)) && (botDist == -1f || d < botDist))
+                            {
+                                nearestBot = enemies[i];
+                                botDist = d;
+                            }
+                        }
+                        else if (Ammo > 0)
+                        {
+                            // aggro
+                            if (noobDist == -1f || d < noobDist)
+                            {
+                                noobDist = d;
+                                nearestNoob = enemies[i];
+                            }
                         }
                     }
-                    else if (Ammo > 0)
+
+                    if (nearestBot != null)
                     {
-                        // aggro
-                        if (noobDist == -1f || d < noobDist)
-                        {
-                            noobDist = d;
-                            nearestNoob = enemies[i];
-                        }
+                        VelocityToAction(ref action, Pos - nearestBot.Pos);
+
+
+                    }
+                    else if (nearestNoob != null)
+                    {
+                        VelocityToAction(ref action, nearestNoob.Pos - Pos);
                     }
                 }
 
-                if (nearestBot != null)
+                // collect bullets
+                if (noobDist == -1f && nearestFriendly != null)
                 {
-                    VelocityToAction(ref action, Pos - nearestBot.Pos);
-                }
-                else if (nearestNoob != null)
-                {
-                    VelocityToAction(ref action, nearestNoob.Pos - Pos);
+                    dist = nearestFriendly.Pos - Pos;
+
+                    VelocityToAction(ref action, dist);
                 }
             }
 
 
-            // collect bullets
-            if (noobDist == -1f && nearestFriendly != null)
-            {
-                dist = nearestFriendly.Pos - Pos;
 
-                VelocityToAction(ref action, dist);
-            }
-
-            if (!normalEvasion && nearestEnemy != null)
+            if (!bulletEvasion && nearestEnemy != null)
             {
                 VelocityToAction(ref action, Pos - nearestEnemy.Pos);
             }

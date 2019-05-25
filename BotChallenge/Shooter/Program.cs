@@ -17,9 +17,8 @@ namespace Shooter
         {
             Type[] bots = new Type[]
             {
+                typeof(Dominik3),
                 typeof(Human),
-                typeof(Rand),
-                //typeof(Rand),
             };
 
             RunManagerTournament runManager = new RunManagerTournament(typeof(EnvShooter), bots, 2, 1, visible, OutputMode.ResultOfEveryIteration);
