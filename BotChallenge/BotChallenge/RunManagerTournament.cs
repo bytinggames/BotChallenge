@@ -25,15 +25,15 @@ namespace BotChallenge
 
         public RunManagerTournament(Type env, Type[] bots, int botsPerBattle, int iterations, bool visible, OutputMode outputMode)
         {
+            if (botsPerBattle > bots.Length)
+                botsPerBattle = bots.Length;
+
             this.envType = env;
             this.botTypes = bots;
             this.botsPerBattle = botsPerBattle;
             this.iterations = iterations;
             this.visible = visible;
             this.outputMode = outputMode;
-
-            if (botsPerBattle > bots.Length)
-                botsPerBattle = bots.Length;
         }
 
         public void Loop()

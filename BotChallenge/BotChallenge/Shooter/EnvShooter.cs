@@ -317,7 +317,7 @@ namespace BotChallenge.Shooter
 
             if (gameEnd)
             {
-                if (Visible && (Input.enter.pressed || Input.space.pressed))
+                if (Visible && (Input.enter.down || Input.space.pressed))
                     game.Exit();
             }
             else
