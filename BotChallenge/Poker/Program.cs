@@ -16,9 +16,9 @@ namespace Poker
         {
             Type[] bots = new Type[]
             {
-                typeof(Human),
-                typeof(Human),
-                typeof(Human),
+                typeof(Rand),
+                typeof(Rand),
+                typeof(Rand),
             };
 
             RunManagerTournament runManager = new RunManagerTournament(typeof(EnvPoker), bots, bots.Length, 3, VISIBLE, OutputMode.ResultOfEveryIteration);

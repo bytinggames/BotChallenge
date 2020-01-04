@@ -28,7 +28,7 @@ namespace Shooter
             MouseState mouse = Mouse.GetState();
 
             Vector2 dist = Vector2.Normalize(Vector2.Transform(mouse.Position.ToVector2(), Matrix.Invert(EnvShooter.matrix)) - Pos);
-
+            
             return new EnvShooter.Action()
             {
                 right = keyboard.IsKeyDown(Keys.D),

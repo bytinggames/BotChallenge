@@ -49,7 +49,6 @@ namespace BotChallenge
 
             graphics.PreferredBackBufferWidth = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.75f);
             graphics.PreferredBackBufferHeight = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height * 0.75f);
-            //graphics.ToggleFullScreen();
 
 
             Content.RootDirectory = "Content";
@@ -61,8 +60,10 @@ namespace BotChallenge
             windowResX = resX;
             windowResY = resY;
 
+            //if (!isFullScreen)
+            //    ToggleFullscreen();
 
-            //ToggleFullscreen();
+            //pause = true;
         }
 
         protected override void Initialize()
@@ -113,6 +114,9 @@ namespace BotChallenge
                     if (Input.leftControl.down)
                         iterations *= 10;
                 }
+
+                if (Input.enter.down)
+                    iterations = 10000;
 
                 for (int i = 0; i < iterations; i++)
                 {
