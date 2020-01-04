@@ -11,12 +11,12 @@ namespace Poker
     {
         protected override int GetAction(int addMinimum)
         {
-            if (EnvPoker.constRand.Next(4) == 0)
+            if (EnvPoker.constRand.Next(16) == 0)
                 return -1;
-            else if (EnvPoker.constRand.Next(2) == 0)
-                return 0;
-            else
+            else if (EnvPoker.constRand.Next(3) == 0)
                 return EnvPoker.constRand.Next(GetMoney());
+            else
+                return 0;
         }
     }
 }

@@ -64,7 +64,7 @@ namespace BotChallenge.Poker
                 this.enemies = enemies;
                 this.env = env;
 
-                r = rPlus++;
+                id = idPlus++;
             }
 
             protected Bot[] enemies;
@@ -95,10 +95,10 @@ namespace BotChallenge.Poker
             }
             protected abstract int GetAction(int addMinimum);
 
-            static int rPlus = 0;
-            int r;
+            static int idPlus = 0;
+            internal int id;
 
-            public string GetName() { return GetType().Name + r; }
+            public string GetName() { return GetType().Name + id; }
         }
         
         Bot[] bots;
@@ -177,12 +177,13 @@ namespace BotChallenge.Poker
 
 
             // Game start
-            int bettingRound = 0;
+            int gameRound = 0;
 
             while (true)
             {
                 //Big Round start
-                Console.Write("\n_________________________________________________\nBetting Round " + (bettingRound + 1) + ":\n");
+                Console.ReadLine();
+                Console.Write("\n_________________________________________________\nGame Round " + (gameRound + 1) + ":\n");
 
                 Console.Write("\nMoney: ");
 
@@ -220,14 +221,18 @@ namespace BotChallenge.Poker
                 {
                     //Small Round start
 
+                    Console.ReadLine();
                     Console.Write("\n_____________________\nBots: ");
                     
                     for (int i = 0; i < bots.Length; i++)
                     {
+                        if (bots[i].money == 0 && bots[i].moneySetRound == 0 && bots[i].moneySetTotal == 0)
+                            bots[i].ingame = false;
+
                         if (bots[i].ingame)
                         {
                             if (bots[i].money > 0)
-                                Console.ForegroundColor = ConsoleColor.Gray;
+                                Console.ForegroundColor = ConsoleColor.White;
                             else
                                 Console.ForegroundColor = ConsoleColor.Red;
                         }
@@ -238,7 +243,7 @@ namespace BotChallenge.Poker
                     }
 
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.Write("\nTable: ");
+                    Console.Write("\t\tTable: ");
 
 
                     for (int i = 0; i < cardsOnTable.Count; i++)
@@ -246,12 +251,46 @@ namespace BotChallenge.Poker
                         //Console.ForegroundColor = cardsOnTable[i].GetColor();
                         Console.Write(cardsOnTable[i] + " ");
                     }
+                    Console.WriteLine("\t\t\t\tPot:  " + bots.Sum(f => f.moneySetTotal));
+
+                    Console.Write("\t");
+                    for (int i = 0; i < bots.Length; i++)
+                    {
+                        if (bots[i].ingame)
+                        {
+                            if (bots[i].money > 0)
+                                Console.ForegroundColor = ConsoleColor.White;
+                            else
+                                Console.ForegroundColor = ConsoleColor.Red;
+                        }
+                        else
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                        Console.Write(bots[i].money + "\t");
+                    }
                     Console.WriteLine();
-                    Console.Write("Pot:  " + bots.Sum(f => f.moneySetTotal));
 
-                    Console.WriteLine("\n");
+                    Console.Write("\t");
+                    for (int i = 0; i < bots.Length; i++)
+                    {
+                        if (bots[i].ingame)
+                        {
+                            if (bots[i].money > 0)
+                                Console.ForegroundColor = ConsoleColor.White;
+                            else
+                                Console.ForegroundColor = ConsoleColor.Red;
+                        }
+                        else
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
 
-                    if (botsIngame.Count > 1)
+                        Console.Write(bots[i].moneySetTotal + "\t");
+                    }
+                    Console.ForegroundColor = ConsoleColor.Gray;
+
+
+                    Console.WriteLine("\n" + new string('.', 30));
+
+                    if (botsIngame.Count(f => f.money > 0) > 1)
                     {
                         int minimum = round == 0 ? smallBlind : 0; // TODO: small blind can bet too next round!
                         int turnIndex = 1;
@@ -283,7 +322,8 @@ namespace BotChallenge.Poker
                                     botsIngame[turn].moneySetRound += action;
                                     botsIngame[turn].money -= action;
 
-                                    Console.Write(botsIngame[turn].GetName() + " bet " + botsIngame[turn].moneySetRound);
+                                    Console.Write(new string('\t', botsIngame[turn].id + 1) + botsIngame[turn].moneySetRound);
+                                    //Console.Write(botsIngame[turn].GetName() + " bet " + botsIngame[turn].moneySetRound);
                                     if (botsIngame[turn].money == 0)
                                         Console.WriteLine(" ALL IN!");
                                     else
@@ -299,7 +339,8 @@ namespace BotChallenge.Poker
                                 }
                                 else if (action < 0)
                                 {
-                                    Console.WriteLine(botsIngame[turn].GetName() + " left");
+                                    Console.WriteLine(new string('\t', botsIngame[turn].id + 1) + "X");
+                                    //Console.WriteLine(botsIngame[turn].GetName() + " left");
 
 
                                     if (botsIngame[turn] == lastRaised)
@@ -316,8 +357,13 @@ namespace BotChallenge.Poker
                                 }
                                 else
                                 {
-                                    Console.WriteLine(botsIngame[turn].GetName() + " checked");
+                                    Console.WriteLine(new string('\t', botsIngame[turn].id + 1) + "-");
+                                    //Console.WriteLine(botsIngame[turn].GetName() + " checked");
                                 }
+                            }
+                            else if (botsIngame[turn].moneySetTotal == 0 && botsIngame[turn].moneySetRound == 0)
+                            {
+                                botsIngame[turn].ingame = false;
                             }
 
                             turn++;
@@ -351,20 +397,34 @@ namespace BotChallenge.Poker
                     }
                 }
 
+                
+                Console.WriteLine(new string('\t', 12) + "Pot:  " + bots.Sum(f => f.moneySetTotal));
+
+
                 if (botsIngame.Count == 1)
                 {
                     //  give last bot all money (not more, than he bet)
+                    int getFromEachPlayerMax = botsIngame[0].moneySetTotal;
+                    int getTotal = 0;
                     for (int i = 0; i < bots.Length; i++)
                     {
-                        int get = Math.Min(bots[i].moneySetTotal, botsIngame[0].moneySetTotal);
-                        botsIngame[0].money += get;
+                        int get = Math.Min(bots[i].moneySetTotal, getFromEachPlayerMax);
+                        getTotal += get;
                         bots[i].moneySetTotal -= get;
                     }
+
+                    Console.WriteLine("GAIN: ");
+                    Console.Write(new string('\t', botsIngame[0].id + 1) + "+"+getTotal);
+
+                    botsIngame[0].money += getTotal;
+                    getTotal = 0;
+                    Console.WriteLine();
                 }
                 else
                 {
                     //check who has the bast cards
                     // TODO
+                    // TODO: all in can't get more than he set (distribute rest to... dunno?)
                     
                     for (int i = 0; i < botsIngame.Count; i++)
                     {
@@ -375,31 +435,135 @@ namespace BotChallenge.Poker
                             if (botsIngame[i].score != -1)
                             {
                                 botsIngame[i].check = j;
+
+                                Console.WriteLine(new string('\t', botsIngame[i].id + 1) + checks[j].Method.Name.Remove(0, "Check".Length) + " (" + botsIngame[i].score + ")");
                                 break;
                             }
                         }
                     }
+                    Console.WriteLine();
 
-                    List<Bot> best = new List<Bot>() { botsIngame[0] };
+                    List<List<Bot>> best = new List<List<Bot>>();
+                    best.Add(new List<Bot>() { botsIngame[0] });
                     for (int i = 1; i < botsIngame.Count; i++)
                     {
-                        if (botsIngame[i].check < best[0].check)
-                            best = new List<Bot>() { botsIngame[i] };
-                        else if (botsIngame[i].check == best[0].check)
+                        int j;
+                        for (j = 0; j < best.Count; j++)
                         {
-                            if (botsIngame[i].score > best[0].score)
+                            if (botsIngame[i].check < best[j][0].check)
                             {
-                                best = new List<Bot>() { botsIngame[i] };
+                                best.Insert(j, new List<Bot>() { botsIngame[i] });
+                                break;
                             }
-                            else if (botsIngame[i].score == best[0].score)
+                            else if (botsIngame[i].check == best[j][0].check)
                             {
-                                best.Add(botsIngame[i]);
+                                if (botsIngame[i].score > best[j][0].score)
+                                {
+                                    best.Insert(j, new List<Bot>() { botsIngame[i] });
+                                    break;
+                                }
+                                else if (botsIngame[i].score == best[j][0].score)
+                                {
+                                    best[j].Add(botsIngame[i]);
+                                    break;
+                                }
                             }
+                        }
+                        if (j == best.Count)
+                            best.Add(new List<Bot>() { botsIngame[i] });
+                    }
+
+
+                    List<Bot> botsMoneyOrder = botsIngame.OrderBy(f => f.moneySetTotal).ToList();
+
+                    List<Tuple<int, List<Bot>>> pots = new List<Tuple<int, List<Bot>>>();
+
+                    for (int i = 0; i < botsMoneyOrder.Count; i++)
+                    {
+                        int moneySet = botsMoneyOrder[i].moneySetTotal;
+                        if (moneySet > 0)
+                        {
+                            Tuple<int, List<Bot>> pot = new Tuple<int, List<Bot>>(moneySet * (botsMoneyOrder.Count - i), new List<Bot>());
+                            for (int j = i; j < botsMoneyOrder.Count; j++)
+                            {
+                                botsMoneyOrder[j].moneySetTotal -= moneySet;
+
+                                pot.Item2.Add(botsMoneyOrder[j]);
+                            }
+                            pots.Add(pot);
                         }
                     }
 
-                    //best = bots.Skip(1).ToList();
+                    int potNr = 0;
+                    foreach (var pot in pots)
+                    {
+                        int win = -1;
+                        for (int i = 0; win == -1 && i < best.Count; i++)
+                        {
+                            for (int i2 = 0; win == -1 && i2 < best[i].Count; i2++)
+                            {
+                                for (int j = 0; j < pot.Item2.Count; j++)
+                                {
+                                    if (best[i][i2] == pot.Item2[j])
+                                    {
+                                        win = i;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
 
+                        int winnerInsidePot = best[win].Count(f => pot.Item2.Contains(f));
+
+                        int part = pot.Item1 / winnerInsidePot;
+                        int overflow = pot.Item1 % winnerInsidePot;
+
+                        Console.WriteLine("Pot Battle " + (potNr + 1) + " ("+pot.Item1+"):");
+                        for (int i = 0; i < best[win].Count; i++)
+                        {
+                            if (pot.Item2.Contains(best[win][i]))
+                            {
+                                best[win][i].money += part;
+                                Console.WriteLine(new string('\t', best[win][i].id + 1) + "+" + part);
+                            }
+                        }
+
+                        potNr++;
+                    }
+
+                    /*
+                    for (int i = 0; i < botsIngame.Count; i++)
+                    {
+
+                    }
+
+                    foreach (List<Bot> bests in best)
+                    {
+                        int partitions = bests.Count;
+                        int partyMoneySet = bests.Sum(f => f.moneySetTotal);
+                        float[] anteile = new float[bests.Count];
+
+                        for (int i = 0; i < anteile.Length; i++)
+                        {
+                            anteile[i] = (float)bests[i].moneySetTotal / partyMoneySet;
+                        }
+
+                        int get = 0;
+                        for (int i = 0; i < bots.Length; i++)
+                        {
+                            get += Math.Min(bots[i].moneySetTotal, partyMoneySet);
+                        }
+
+                        for (int i = 0; i < bests.Count; i++)
+                        {
+                            bests[i].money += 
+                        }
+                    }
+
+                */
+
+                    //best = bots.Skip(1).ToList();
+                    /*
                     for (int i = 0; i < bots.Length; i++)
                     {
                         bots[i].check = 0;
@@ -414,6 +578,9 @@ namespace BotChallenge.Poker
                     int upper = 0;
                     int upperCount;
                     int part;
+
+                    int[] getMoney = new int[best.Count];
+
                     for (int i = 1; i < best.Count; i++)
                     {
                         if (best[i].moneySetTotal < best[upper].moneySetTotal)
@@ -437,10 +604,10 @@ namespace BotChallenge.Poker
                             part = ueberschuss / upperCount;
                             for (int k = i - 1; k >= upper; k--)
                             {
-                                best[k].money += part;
+                                getMoney[k] += part;
                                 ueberschuss -= part;
                                 best[k].moneySetTotal -= winDistance;
-                                best[k].money += winDistance;
+                                getMoney[k] += winDistance;
                             }
                             //bots[upper].money += ueberschuss; // rest if not divisionable
                             ueberschuss = 0;
@@ -449,15 +616,31 @@ namespace BotChallenge.Poker
 
                     // serving money
                     upperCount = best.Count;
-                    part = bots.Sum(f => f.moneySetTotal) / upperCount;
+                    int moneySetTotalSum = bots.Sum(f => f.moneySetTotal);
+                    part = moneySetTotalSum / upperCount;
+                    int overflow = moneySetTotalSum % upperCount; // the money, that can't be parted evenly
                     for (int i = 0; i < bots.Length; i++)
                     {
                         bots[i].moneySetTotal = 0;
                     }
                     for (int i = 0; i < best.Count; i++)
                     {
-                        best[i].money += part;
+                        getMoney[i] += part;
                     }
+                    for (int i = 0; i < overflow; i++)
+                    {
+                        getMoney[i] += 1;
+                    }
+
+                    Console.WriteLine("GAIN: ");
+                    for (int i = 0; i < best.Count; i++)
+                    {
+                        Console.WriteLine(new string('\t', best[i].id + 1) + getMoney[i]);
+
+                        best[i].money += getMoney[i];
+                        getMoney[i] = 0;
+                    }
+                    */
                 }
 
                 for (int i = 0; i < bots.Length; i++)
@@ -470,9 +653,7 @@ namespace BotChallenge.Poker
                 // TODO get only the money you bet
                 // TODO split money on equal cards
 
-                Console.ReadLine();
-
-                bettingRound++;
+                gameRound++;
             }
 
 
