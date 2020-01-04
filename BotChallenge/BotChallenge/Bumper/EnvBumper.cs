@@ -49,6 +49,8 @@ namespace BotChallenge.Bumper
             internal float damageDealt;
             internal int kills;
 
+            internal int timeAlive = 999999999;
+
             //visible for the bot programmer
             public int Id { get { return id; } }
             public bool Alive { get { return health > 0; } }
@@ -235,7 +237,7 @@ namespace BotChallenge.Bumper
                 int j;
                 for (j = 0; j < r.Count; j++)
                 {
-                    if (bots[i].damageDealt < r[j].damageDealt)
+                    if (bots[i].timeAlive < r[j].timeAlive)
                         break;
                 }
                 r.Insert(j, bots[i]);
@@ -360,7 +362,10 @@ namespace BotChallenge.Bumper
                     {
                         Vector2 center = new Vector2(Math.Min(width, height) / 2f);
                         if (Vector2.Distance(bots[i].pos, center) > center.X)
+                        {
                             bots[i].health = 0f;
+                            bots[i].timeAlive = frame;
+                        }
                     }
 
                     if (bots[i].Alive)
@@ -430,6 +435,7 @@ namespace BotChallenge.Bumper
 
         void MonoMethods.Draw(SpriteBatch spriteBatch)
         {
+
             float scale = Math.Min((float)graphics.PreferredBackBufferWidth / width, (float)graphics.PreferredBackBufferHeight / height);
 
             float realW = graphics.PreferredBackBufferWidth / scale;
@@ -442,7 +448,8 @@ namespace BotChallenge.Bumper
             DrawM.basicEffect.World = matrix;
             DrawM.scale = scale;
 
-            spriteBatch.GraphicsDevice.Clear(new Color(128,128,128));
+            //spriteBatch.GraphicsDevice.Clear(new Color(128,128,128));
+            spriteBatch.GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.Deferred,null,SamplerState.PointClamp,null,null,null,matrix);
 
@@ -536,8 +543,9 @@ namespace BotChallenge.Bumper
                     text += "______________________\n";
                     text += "Bot " + i + "\n";
                     text += "Health: " + bots[i].health + "\n";
-                    text += "Kills: " + bots[i].kills + "\n";
-                    text += "Damage Dealt: " + bots[i].damageDealt + "\n";
+                    text += "Time Alive: " + bots[i].timeAlive + "\n";
+                    /*text += "Kills: " + bots[i].kills + "\n";
+                    text += "Damage Dealt: " + bots[i].damageDealt + "\n";*/
                 }
             }
 
