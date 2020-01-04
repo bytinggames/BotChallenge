@@ -811,7 +811,7 @@ namespace BotChallenge.Poker
 
         public float CheckHighestCard(Card[] cards)
         {
-            return Math.Max(cards[5].Number, cards[6].Number);
+            return Math.Max(cards[5].Number, cards[6].Number) + Math.Min(cards[5].Number, cards[6].Number) / 100f;
         }
     }
 }
