@@ -11,32 +11,28 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bumper
 {
-    class Rand : EnvBumper.Bot
+    class Julian : EnvBumper.Bot
     {
-        float angle = (float)EnvBumper.constRand.NextDouble() * MathHelper.TwoPi;
-
         protected override Color GetColor()
         {
             return Color.Gray;
         }
 
-        public Rand()
+        public Julian()
         {
 
         }
 
         protected override EnvBumper.Action GetAction()
         {
-            KeyboardState keyboard = Keyboard.GetState();
-            MouseState mouse = Mouse.GetState();
-
-            Vector2 dist = Vector2.Normalize(Vector2.Transform(mouse.Position.ToVector2(), Matrix.Invert(EnvBumper.matrix)) - Pos);
-            
-            angle += ((float)EnvBumper.constRand.NextDouble() - 0.5f) * 1f;
+            //Pos
+            //Velocity
+            //enemies[0].Pos
+            //enemies[0].Velocity
 
             return new EnvBumper.Action()
             {
-                angle = angle,
+                angle = MathHelper.Pi,
                 accelerate = true
             };
         }

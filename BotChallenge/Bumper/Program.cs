@@ -16,8 +16,8 @@ namespace Bumper
         {
             Type[] bots = new Type[]
             {
-                typeof(Human),
                 typeof(Rand),
+                typeof(Julian),
             };
 
             RunManagerTournament runManager = new RunManagerTournament(typeof(EnvBumper), bots, bots.Length, 10, visible, OutputMode.ResultOfEveryIteration);

@@ -12,8 +12,10 @@ namespace BotChallenge.Bumper
 {
     public class EnvBumper : Env, MonoMethods
     {
-        int width = 20;
-        int height = 20;
+        public const float RADIUS = 10;
+
+        int width = (int)RADIUS * 2;
+        int height = (int)RADIUS * 2;
         bool loadFromTexture = false;
         public bool LoadFromTexture => loadFromTexture;
         public const int TOTALFRAMES = 60 * 60 * 2; // 2min
@@ -21,13 +23,13 @@ namespace BotChallenge.Bumper
 
         public abstract class Bot
         {
-            public const float ACCELERATION = 0.005f;
-            public const float MAXVELOCITY = 10f;
-            public const float SPEED = 0.1f;
             public const float RADIUS = 0.4f;
-            public const bool COLLISIONSPEEDWASTE = true;
-            public const float CHARGESPEED = 1f / 60f;
-            public const float MAXSHOOTSPEED = 0.5f;
+            public const float ACCELERATION = 0.005f;
+            internal const float MAXVELOCITY = 10f;
+            internal const float SPEED = 0.1f;
+            internal const bool COLLISIONSPEEDWASTE = true;
+            internal const float CHARGESPEED = 1f / 60f;
+            internal const float MAXSHOOTSPEED = 0.5f;
 
             internal float aim;
             private Vector2 _pos;
@@ -75,12 +77,14 @@ namespace BotChallenge.Bumper
             //visible for the bot programmer
             protected Bot[] enemies;
             protected bool[,] map;
-            public float Charge { get { return charge; } }
+            //public float Charge { get { return charge; } }
             public Vector2 Pos { get { return _pos; } }
-            public int Ammo { get { return ammo; } }
-            public float Health => health;
+            //public int Ammo { get { return ammo; } }
+            //public float Health => health;
             protected Random rand;
             internal Vector2 velocity;
+
+            public Vector2 Velocity => velocity;
 
             internal Action GetInternalAction()
             {
@@ -301,8 +305,7 @@ namespace BotChallenge.Bumper
                 //    map[width - 1, y] = true;
                 //}
             }
-
-            Vector2 center = new Vector2(Math.Min(width, height) / 2f);
+            
             for (int i = 0; i < this.bots.Length; i++)
             {
                 List<Bot> botsList = this.bots.ToList();
@@ -312,10 +315,10 @@ namespace BotChallenge.Bumper
                 Vector2 pos;
                 do
                 {
-                    x = constRand.Next(Width);
-                    y = constRand.Next(Height);
+                    x = constRand.Next(Width) - Width / 2;
+                    y = constRand.Next(Height) - Height / 2;
                     pos = new Vector2(x + 0.5f, y + 0.5f);
-                } while (map[x, y] || this.bots.Any(f => f.pos == pos) || Vector2.Distance(pos, center) > center.X * 0.75f);
+                } while (this.bots.Any(f => f.pos == pos) || pos.Length() > RADIUS * 0.75f);
                 
                 this.bots[i].Initialize(this, botsList.ToArray(), map, pos, i);
             }
@@ -360,8 +363,7 @@ namespace BotChallenge.Bumper
                 {
                     if (bots[i].Alive)
                     {
-                        Vector2 center = new Vector2(Math.Min(width, height) / 2f);
-                        if (Vector2.Distance(bots[i].pos, center) > center.X)
+                        if (bots[i].pos.Length() > RADIUS + Bot.RADIUS)
                         {
                             bots[i].health = 0f;
                             bots[i].timeAlive = frame;
@@ -426,7 +428,7 @@ namespace BotChallenge.Bumper
                     }
                     else
                     {
-                        bots[i].velocity *= 0.99f;
+                        bots[i].velocity *= 0.97f;
                     }
                 }
             }
@@ -441,7 +443,7 @@ namespace BotChallenge.Bumper
             float realW = graphics.PreferredBackBufferWidth / scale;
             float realH = graphics.PreferredBackBufferHeight / scale;
 
-            Vector2 shift = new Vector2(realW, realH) / 2f - new Vector2(width, height) / 2f;
+            Vector2 shift = new Vector2(realW, realH) / 2f;// - new Vector2(width, height) / 2f;
 
             matrix =  Matrix.CreateTranslation(new Vector3(shift, 0)) * Matrix.CreateScale(scale);
             //DrawM.basicEffect.SetWorldAndInvTransp(matrix);
@@ -454,7 +456,7 @@ namespace BotChallenge.Bumper
             spriteBatch.Begin(SpriteSortMode.Deferred,null,SamplerState.PointClamp,null,null,null,matrix);
 
             //DrawM.Vertex.DrawRectangle(new M_Rectangle(0, 0, width, height), Color.CornflowerBlue);
-            DrawM.Vertex.DrawCircle(new Vector2(width, height) / 2f, Math.Min(width, height) / 2f, Color.CornflowerBlue, 16f);
+            DrawM.Vertex.DrawCircle(Vector2.Zero, RADIUS, Color.CornflowerBlue, 16f);
 
             for (int y = 0; y < height; y++)
             {
@@ -525,6 +527,7 @@ namespace BotChallenge.Bumper
                     float textScale = Bot.RADIUS * 2f / textSize.Length();
                     textSize *= textScale;
                     spriteBatch.DrawString(font, text, bots[i].pos - textSize / 2f, Color.Black, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
+                    
                 }
             }
 

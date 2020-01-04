@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Julian.cs" />
     <Compile Include="Rand.cs" />
     <Compile Include="Human.cs" />
     <Compile Include="Program.cs" />

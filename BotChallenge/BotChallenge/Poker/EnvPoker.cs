@@ -289,6 +289,7 @@ namespace BotChallenge.Poker
 
 
                     Console.WriteLine("\n" + new string('.', 30));
+                    Console.ReadLine();
 
                     if (botsIngame.Count(f => f.money > 0) > 1)
                     {
@@ -374,6 +375,7 @@ namespace BotChallenge.Poker
                             else if (turnIndex == 2)
                                 turnIndex = 0;
 
+                            Console.ReadLine();
                         } while (forced || botsIngame[turn] != lastRaised && botsIngame.Count > 1);
 
 
@@ -397,7 +399,26 @@ namespace BotChallenge.Poker
                     }
                 }
 
-                
+
+                Console.Write("\t");
+                for (int i = 0; i < bots.Length; i++)
+                {
+                    if (bots[i].ingame)
+                    {
+                        if (bots[i].money > 0)
+                            Console.ForegroundColor = ConsoleColor.White;
+                        else
+                            Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    else
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                    Console.Write(bots[i].moneySetTotal + "\t");
+                }
+                Console.ForegroundColor = ConsoleColor.Gray;
+
+
+                Console.WriteLine("\n" + new string('.', 30));
                 Console.WriteLine(new string('\t', 12) + "Pot:  " + bots.Sum(f => f.moneySetTotal));
 
 
@@ -442,6 +463,7 @@ namespace BotChallenge.Poker
                         }
                     }
                     Console.WriteLine();
+                    Console.ReadLine();
 
                     List<List<Bot>> best = new List<List<Bot>>();
                     best.Add(new List<Bot>() { botsIngame[0] });
@@ -483,14 +505,25 @@ namespace BotChallenge.Poker
                         int moneySet = botsMoneyOrder[i].moneySetTotal;
                         if (moneySet > 0)
                         {
-                            Tuple<int, List<Bot>> pot = new Tuple<int, List<Bot>>(moneySet * (botsMoneyOrder.Count - i), new List<Bot>());
+                            int potMoney = 0;
+                            Tuple<int, List<Bot>> pot = new Tuple<int, List<Bot>>(0, new List<Bot>());
                             for (int j = i; j < botsMoneyOrder.Count; j++)
                             {
-                                botsMoneyOrder[j].moneySetTotal -= moneySet;
+                                int botPotMoney = Math.Min(botsMoneyOrder[j].moneySetTotal, moneySet);
+                                potMoney += botPotMoney;
+
+                                botsMoneyOrder[j].moneySetTotal -= botPotMoney;
 
                                 pot.Item2.Add(botsMoneyOrder[j]);
                             }
-                            pots.Add(pot);
+
+                            //for (int j = 0; j < bots.Length; j++)
+                            //{
+                            //    potMoney += Math.Min(moneySet;
+                            //    bots[j].moneySetTotal -= moneySet;
+                            //}
+                            pot = new Tuple<int, List<Bot>>(potMoney, pot.Item2);
+                            pots.Add(pot); // TODO
                         }
                     }
 
@@ -530,117 +563,6 @@ namespace BotChallenge.Poker
 
                         potNr++;
                     }
-
-                    /*
-                    for (int i = 0; i < botsIngame.Count; i++)
-                    {
-
-                    }
-
-                    foreach (List<Bot> bests in best)
-                    {
-                        int partitions = bests.Count;
-                        int partyMoneySet = bests.Sum(f => f.moneySetTotal);
-                        float[] anteile = new float[bests.Count];
-
-                        for (int i = 0; i < anteile.Length; i++)
-                        {
-                            anteile[i] = (float)bests[i].moneySetTotal / partyMoneySet;
-                        }
-
-                        int get = 0;
-                        for (int i = 0; i < bots.Length; i++)
-                        {
-                            get += Math.Min(bots[i].moneySetTotal, partyMoneySet);
-                        }
-
-                        for (int i = 0; i < bests.Count; i++)
-                        {
-                            bests[i].money += 
-                        }
-                    }
-
-                */
-
-                    //best = bots.Skip(1).ToList();
-                    /*
-                    for (int i = 0; i < bots.Length; i++)
-                    {
-                        bots[i].check = 0;
-                    }
-                    for (int i = 0; i < best.Count; i++)
-                    {
-                        best[i].check = 1;
-                    }
-
-                    best = best.OrderByDescending(f => f.moneySetTotal).ToList();
-
-                    int upper = 0;
-                    int upperCount;
-                    int part;
-
-                    int[] getMoney = new int[best.Count];
-
-                    for (int i = 1; i < best.Count; i++)
-                    {
-                        if (best[i].moneySetTotal < best[upper].moneySetTotal)
-                        {
-                            // getting money round
-                            int ueberschuss = 0;
-                            int winDistance = bots[upper].moneySetTotal - best[i].moneySetTotal;
-                            // collecting money
-                            for (int j = 0; j < bots.Length; j++)
-                            {
-                                if (bots[j].check == 0 && bots[j].moneySetTotal > best[i].moneySetTotal)
-                                {
-                                    int get = bots[j].moneySetTotal - best[i].moneySetTotal;
-                                    bots[j].moneySetTotal -= get;
-                                    ueberschuss += get;
-                                }
-                            }
-
-                            // serving money
-                            upperCount = i - upper;
-                            part = ueberschuss / upperCount;
-                            for (int k = i - 1; k >= upper; k--)
-                            {
-                                getMoney[k] += part;
-                                ueberschuss -= part;
-                                best[k].moneySetTotal -= winDistance;
-                                getMoney[k] += winDistance;
-                            }
-                            //bots[upper].money += ueberschuss; // rest if not divisionable
-                            ueberschuss = 0;
-                        }
-                    }
-
-                    // serving money
-                    upperCount = best.Count;
-                    int moneySetTotalSum = bots.Sum(f => f.moneySetTotal);
-                    part = moneySetTotalSum / upperCount;
-                    int overflow = moneySetTotalSum % upperCount; // the money, that can't be parted evenly
-                    for (int i = 0; i < bots.Length; i++)
-                    {
-                        bots[i].moneySetTotal = 0;
-                    }
-                    for (int i = 0; i < best.Count; i++)
-                    {
-                        getMoney[i] += part;
-                    }
-                    for (int i = 0; i < overflow; i++)
-                    {
-                        getMoney[i] += 1;
-                    }
-
-                    Console.WriteLine("GAIN: ");
-                    for (int i = 0; i < best.Count; i++)
-                    {
-                        Console.WriteLine(new string('\t', best[i].id + 1) + getMoney[i]);
-
-                        best[i].money += getMoney[i];
-                        getMoney[i] = 0;
-                    }
-                    */
                 }
 
                 for (int i = 0; i < bots.Length; i++)
