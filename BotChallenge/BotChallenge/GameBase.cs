@@ -115,8 +115,8 @@ namespace BotChallenge
                         iterations *= 10;
                 }
 
-                if (Input.enter.down)
-                    iterations = 10000;
+                //if (Input.enter.down)
+                //    iterations = 10000;
 
                 for (int i = 0; i < iterations; i++)
                 {
