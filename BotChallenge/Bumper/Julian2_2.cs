@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bumper
 {
-    class Julian : EnvBumper.Bot
+    class Julian2_2 : EnvBumper.Bot
     {
         int frames = 0;
 
@@ -30,7 +30,7 @@ namespace Bumper
             return Color.Orange;
         }
 
-        public Julian()
+        public Julian2_2()
         {
 
         }

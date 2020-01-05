@@ -51,7 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dominik1.cs" />
+    <Compile Include="Dominik0.cs" />
+    <Compile Include="Dominik2.cs" />
+    <Compile Include="Julian2_2.cs" />
+    <Compile Include="Julian2_1.cs" />
+    <Compile Include="Julian1_2.cs" />
+    <Compile Include="Julian1_1.cs" />
     <Compile Include="Julian.cs" />
+    <Compile Include="Morpheus0.cs" />
+    <Compile Include="Morpheus2.cs" />
+    <Compile Include="Morpheus2_2.cs" />
+    <Compile Include="PinkUnicorn2.cs" />
+    <Compile Include="Rahel2.cs" />
     <Compile Include="Rand.cs" />
     <Compile Include="Human.cs" />
     <Compile Include="Program.cs" />
