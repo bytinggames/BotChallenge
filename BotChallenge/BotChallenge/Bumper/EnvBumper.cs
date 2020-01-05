@@ -544,20 +544,20 @@ namespace BotChallenge.Bumper
                     textSize *= textScale;
                     spriteBatch.DrawString(font, text, bots[i].pos - textSize / 2f, Color.Black, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
 
+                    /*
+                    float a = bots[i].Velocity.X;
+                    float b = bots[i].Velocity.Y;
+                    float x = bots[i].Pos.X;
+                    float y = bots[i].Pos.Y;
+                    float r = EnvBumper.RADIUS;
+                    float t = (float)-Math.Sqrt(a * a * (r * r - y * y) + 2 * a * b * x * y + b * b * (r * r - x * x) + a * x + b * y) / (a * a + b * b);
+                    //float t = 60f;
+                    Console.WriteLine(t);
 
-                    //float a = bots[i].Velocity.X;
-                    //float b = bots[i].Velocity.Y;
-                    //float x = bots[i].Pos.X;
-                    //float y = bots[i].Pos.Y;
-                    //float r = EnvBumper.RADIUS;
-                    //float t = (float)Math.Sqrt(a * a * (r * r - y * y) + 2 * a * b * x * y + b * b * (r * r - x * x) + a * x + b * y) / (a * a + b * b);
-                    ////float t = 60f;
-                    //Console.WriteLine(t);
+                    Vector2 predict = bots[i].Pos + bots[i].Velocity * t;
 
-                    //Vector2 predict = bots[i].Pos + bots[i].Velocity * t;
-
-                    //DrawM.Vertex.DrawCircle(predict, Bot.RADIUS, Color.White, 8f);
-
+                    DrawM.Vertex.DrawCircle(predict, Bot.RADIUS, Color.White, 8f);
+                    */
                     bots[i].Draw();
                 }
             }
