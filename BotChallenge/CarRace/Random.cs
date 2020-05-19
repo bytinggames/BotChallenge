@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 
 namespace CarRace
 {
-    class Random : EnvCarRace.Bot
+    class Random : Bot
     {
         protected override EnvCarRace.Action GetAction()
         {

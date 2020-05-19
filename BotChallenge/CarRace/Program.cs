@@ -20,7 +20,7 @@ namespace CarRace
                 typeof(Random),
             };
 
-            RunManagerTournament runManager = new RunManagerTournament(typeof(EnvCarRace), bots, bots.Length, 3, visible, OutputMode.ResultOfEveryIteration);
+            RunManagerTournament runManager = new RunManagerTournament(typeof(EnvCarRace), bots, bots.Length, 1, visible, OutputMode.ResultOfEveryIteration);
 
             runManager.Loop();
 

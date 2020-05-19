@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JuliHelper.ThreeD;
 
-namespace BotChallenge.CarRace
+namespace JuliHelper.Masks
 {
-    class Car
+    class SpriteSkin
     {
+
     }
 }
