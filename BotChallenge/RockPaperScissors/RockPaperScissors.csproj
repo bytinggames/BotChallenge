@@ -62,6 +62,7 @@
     <Compile Include="Rand2.cs" />
     <Compile Include="Rand3.cs" />
     <Compile Include="Rand.cs" />
+    <Compile Include="Environment\EnvRockPaperScissors.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -61,6 +61,7 @@
     <Compile Include="Niklas2.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Snake\EnvSnake.cs" />
     <Compile Include="Winner1.cs" />
     <Compile Include="Winner2.cs" />
   </ItemGroup>

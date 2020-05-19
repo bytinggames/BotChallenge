@@ -76,6 +76,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Environment\Bullet.cs" />
+    <Compile Include="Environment\EnvBumper.cs" />
     <Compile Include="Dominik1.cs" />
     <Compile Include="Dominik0.cs" />
     <Compile Include="Dominik2.cs" />

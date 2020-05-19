@@ -286,7 +286,7 @@ namespace BotChallenge.Snake
 
             if (gameEnd == true && Visible)
             {
-                game.Exit();
+                //game.Exit();
             }
             else
             {
