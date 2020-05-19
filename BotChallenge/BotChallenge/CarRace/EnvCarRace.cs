@@ -14,14 +14,12 @@ namespace BotChallenge.CarRace
     {
         public int Width { get; } = 160;
         public int Height { get; } = 90;
-        public const int TOTALFRAMES = 60 * 60 * 2; // 2min
+        public readonly int totalFrames = 60 * 60 * 2; // 2min
 
-        public const int GOALCOUNT = 5;
-        public const float GOALRADIUS = 3f;
+        public readonly int goalCount = 5;
+        public readonly float goalRadius = 3f;
 
-        public const float FRICTION = 0.98f;
-
-        public List<Vector2> goals;
+        internal List<Vector2> goals;
         
         public struct Action
         {
@@ -49,8 +47,7 @@ namespace BotChallenge.CarRace
         bool gameEnd;
 
         GraphicsDeviceManager graphics;
-
-        Texture2D texBot, pixel;
+        
         SpriteFont font;
 
         public static Matrix matrix;
@@ -60,12 +57,10 @@ namespace BotChallenge.CarRace
             Collision.minDist = 0.01f;
             CollisionResult.minDist = 0;
 
-            this.bots = GetBots<Bot>(botTypes);
-
             goals = new List<Vector2>();
 
             int space = 4;
-            for (int i = 0; i < GOALCOUNT; i++)
+            for (int i = 0; i < goalCount; i++)
             {
                 Vector2 pos = Vector2.Zero;
                 do
@@ -75,6 +70,8 @@ namespace BotChallenge.CarRace
 
                 goals.Add(pos);
             }
+
+            this.bots = GetBots<Bot>(botTypes);
         }
 
         public override float[] Loop()
@@ -112,11 +109,7 @@ namespace BotChallenge.CarRace
         void MonoMethods.LoadContent(SpriteBatch spriteBatch, ContentManager content, GraphicsDeviceManager graphics)
         {
             this.graphics = graphics;
-
-            pixel = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
-            pixel.SetData<Color>(new Color[] { Color.White });
-
-            texBot = content.Load<Texture2D>("Shooter/Textures/bot");
+            
             font = content.Load<SpriteFont>("Fonts/lato-thin-mod_10");
 
             int x, y;
@@ -129,13 +122,13 @@ namespace BotChallenge.CarRace
 
             for (int i = 0; i < this.bots.Length; i++)
             {
-                this.bots[i].Initialize(this, pos, orientation, i);
+                this.bots[i].Initialize(this, pos, orientation, i, goals.ToList());
             }
         }
 
         void MyUpdate()
         {
-            if ((TOTALFRAMES > 0 && frame == TOTALFRAMES) || bots.All(f => f.goalIndex == GOALCOUNT)) //either timeout or all bots dead but one
+            if ((totalFrames > 0 && frame == totalFrames) || bots.All(f => f.goalIndex == goalCount)) //either timeout or all bots dead but one
             {
                 gameEnd = true;
             }
@@ -226,14 +219,14 @@ namespace BotChallenge.CarRace
                     DrawM.Vertex.DrawLine(goals[i], goals[i + 1], Color.DeepSkyBlue, 0.2f);
                 }
 
-                DrawM.Vertex.DrawCircleOutline(goals[i], GOALRADIUS, Color.DeepSkyBlue, 8f);
+                DrawM.Vertex.DrawCircleOutline(goals[i], goalRadius, Color.DeepSkyBlue, 8f);
 
                 float angle = 0f;
                 float fov = MathHelper.TwoPi / bots.Length;
                 for (int j = 0; j < bots.Length; j++)
                 {
                     Color color = bots[j].goalIndex > i ? Color.Transparent : bots[j].goalIndex == i ? bots[j].GetInternalColor() : Color.DeepSkyBlue;
-                    DrawM.Vertex.DrawCone(goals[i], GOALRADIUS, angle, fov, color, color, 8f);
+                    DrawM.Vertex.DrawCone(goals[i], goalRadius, angle, fov, color, color, 8f);
                     angle += fov;
                 }
                 //DrawM.Vertex.DrawCircle(goals[i], GOALRADIUS, Color.Lime, 16f);

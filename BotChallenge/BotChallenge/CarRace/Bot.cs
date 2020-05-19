@@ -9,65 +9,47 @@ namespace BotChallenge.CarRace
 {
     public abstract class Bot
     {
-        public EnvCarRace.Action action;
+        protected Random rand;
+        protected EnvCarRace env;
+        private int id;
 
-        const float power = 40f;
-        const float handling = 1f;
-        const float drag = 0.01f;//4257f;
+        internal EnvCarRace.Action action;
 
-        public bool Alive = true;
+        #region constant physic variables
 
-        public int goalIndex { get; private set; } = 0;
+        public readonly float length = 2.5f; // m
+        public readonly float width = 1.7f; // m
 
+        public readonly float power = 40f;
+        public readonly float handling = 1f;
 
-        #region constants
-
-        const float length = 2.5f; // m
-        const float massCenterFromBack = 1f; // from the back of the car
-        const float massCenterHeight = 0.5f; // from the ground
-        const float width = 1.7f; // m
-        const float mass = 1500f; // kg
-        const float wheelMass = 7.5f; // kg
-        const float wheelRadius = 0.34f;
-
-
-
-        // friction
-        const float rollingResistance = 0.1f;
-        const float rollingFriction = 0.01f;
-        const float braking = 50000f;
-        const float engine = 10000f;
-        const float rubberFrictionMax = 1f;
-
-        const float engineTorque = 448f; // TODO:
-        const float gearRatio = 2.66f;
-        const float differentialRatio = 3.42f;
-        const float transmissionEfficiency = 0.7f;
-
-        const float tractionConstant = 100000f; // how sharp is the wheel grip curve
-
-
-        // gravity
-        const float g = 9.8f; // m/s^2
-
-
+        public readonly float airFriction = 0.01f;
+        public readonly float rollingFriction = 0.1f;
 
         #endregion
 
+        #region information variables
+
+        protected List<Vector2> goals;
+        protected Vector2 currentGoalV => goals[goalIndex];
+
+        #endregion
+
+        public int goalIndex { get; private set; } = 0;
+
+        
         #region dynamic physics variables
 
-        public Vector2 velocity2; // m/s
-        public M_Polygon mask;
+        public Vector2 velocityV { get; private set; } // m/s
+        internal M_Polygon mask;
+        public M_Polygon Mask { get { return (M_Polygon)mask.Clone(); } }
 
-        Vector2 dir2 { get => Calculate.AngleToVector(orientation); }
-        Vector2 dirRight2 { get => Calculate.AngleToVector(orientation + MathHelper.PiOver2); }
-        public float orientationAngularVelocity;
+        public Vector2 orientationV { get; private set; }
+        public Vector2 directionRightV { get; private set; }
+        public float orientationAngularVelocity { get; private set; }
 
         private float _orientation;
-
-        float rearWheelAngularVelocity = 81.7f; // 0: left, 1: right
-        float rearWheelAngle = MathHelper.PiOver2;
-
+        
         #endregion
 
         List<Vector2> maskSourceVertices;
@@ -76,26 +58,26 @@ namespace BotChallenge.CarRace
 
         #region accessors
 
-        public Vector2 pos
+        public Vector2 positionV
         {
             get { return mask.pos; }
-            set
+            private set
             {
                 mask.pos = value;
             }
         }
-        public float posX
+        public float positionX
         {
             get { return mask.pos.X; }
-            set
+            private set
             {
                 mask.X = value;
             }
         }
-        public float posY
+        public float positionY
         {
             get { return mask.pos.Y; }
-            set
+            private set
             {
                 mask.Y = value;
             }
@@ -104,21 +86,25 @@ namespace BotChallenge.CarRace
         internal float orientation
         {
             get { return _orientation; }
-            set
+            private set
             {
                 _orientation = value;
                 mask.vertices = maskSourceVertices.ToList();
                 mask.RotateRadians(_orientation);
+
+
+                orientationV = Calculate.AngleToVector(orientation);
+                directionRightV = Calculate.AngleToVector(orientation + MathHelper.PiOver2);
             }
         }
+
+        public float goalRadius => env.goalRadius;
+        public int frame => env.Frame;
 
         #endregion
 
         internal bool control;
-
-        protected Random rand;
-        protected EnvCarRace env;
-        private int id;
+        internal bool Alive = true;
 
         public Bot(bool control = true)
         {
@@ -129,42 +115,40 @@ namespace BotChallenge.CarRace
             mask = new M_Polygon(Vector2.Zero, maskSourceVertices.ToList());
 
             if (!control)
-                posX += 10;
+                positionX += 10;
         }
 
-        internal void Initialize(EnvCarRace env, Vector2 pos, float orientation, int id)
+        internal void Initialize(EnvCarRace env, Vector2 pos, float orientation, int id, List<Vector2> goals)
         {
             this.env = env;
-            this.pos = pos;
+            this.positionV = pos;
             this.orientation = orientation;
             this.id = id;
+            this.goals = goals;
             
             rand = Env.constRand;
         }
+        
 
+        public Vector2 accelerationV { get; private set; }
 
-        float slipRatio;
-
-        Vector2 acceleration2;
-
-        bool staticFriction = true;
+        public bool staticFriction { get; private set; } = true;
         internal int frameTime;
 
         public void Update()
         {
+            // seconds passed since last update (always the same to make replays work)
             float elapsedThisFrameS = 1f / 60f;
 
-            if (elapsedThisFrameS == 0)
-                return;
+            // velocity helper variables
+            float velocity = this.velocityV.Length();
+            float velocityLong = Vector2.Dot(this.velocityV, orientationV); // velocity in direction of car heading
+            Vector2 velocityLongV = velocityLong * orientationV;
+            Vector2 velocityLatV = this.velocityV - velocityLongV;
+            float velocityLat = velocityLatV.Length(); // velocity to the right of the car direction
 
-            float velocity = velocity2.Length();
+            #region controls
 
-            float velocityLong = Vector2.Dot(velocity2, dir2);
-            Vector2 velocityLong2 = velocityLong * dir2;
-            Vector2 velocityLat2 = velocity2 - velocityLong2;
-            float velocityLat = velocityLat2.Length();
-
-            #region force to wheels
             float throttlePedal = 0f;
             float brakePedal = 0f;
             float turnSpeed = 0f;
@@ -175,8 +159,7 @@ namespace BotChallenge.CarRace
                 throttlePedal = Math.Min(1f, Math.Max(0f, action.accelerate));
 
                 brakePedal = Math.Min(1f, Math.Max(0f, action.brake));
-
-
+                
                 float cHandling = handling;
                 if (velocity > 0)
                 {
@@ -187,23 +170,19 @@ namespace BotChallenge.CarRace
 
                     turnSpeed = Math.Min(1f, Math.Max(-1f, action.steer)) * cHandling * velocity;
                 }
-
-                //if (turnSpeed == 0)
-                //    turnSpeed = -Math.Sign(orientationAngularVelocity) * 10f;
-
-                handBrake = Input.space.down;
+                
+                //handBrake = Input.space.down;
             }
             else
                 brakePedal = 1f;
+
             #endregion
 
+            // determine if car is in static or kinetic friction
             bool oldStaticFriction = staticFriction;
-
             staticFriction = !handBrake
                 && (Math.Abs(velocityLong) > Math.Abs(velocityLat) * 1.2f && Math.Abs(orientationAngularVelocity * velocity) < 300f);
-
-            //Console.WriteLine(orientationAngularVelocity * velocity);
-
+            
             if (oldStaticFriction && !staticFriction)
             {
                 // begin drift
@@ -211,161 +190,95 @@ namespace BotChallenge.CarRace
                 driftLines.Add(new M_Polygon(Vector2.Zero, new List<Vector2>(), false));
             }
 
-
             if (!staticFriction)
             {
-                driftLines[driftLines.Count - 2].vertices.Add(pos + mask.vertices[1]);
-                driftLines[driftLines.Count - 1].vertices.Add(pos + mask.vertices[2]);
+                // continue drift
+                driftLines[driftLines.Count - 2].vertices.Add(positionV + mask.vertices[1]);
+                driftLines[driftLines.Count - 1].vertices.Add(positionV + mask.vertices[2]);
             }
 
-
+            // calculate thrust force
             float thrustForce = throttlePedal * power;
 
             if (brakePedal > 0f)
                 thrustForce -= Math.Sign(velocityLong) * brakePedal * power * 0.5f;
 
             if (!staticFriction)
-                thrustForce *= 0.8f;
+                thrustForce *= 0.8f; // kinetic friction provides less grip (80% of static friction)
 
-            Vector2 thrustForce2 = Vector2.Zero;
+            Vector2 thrustForceV = Vector2.Zero;
             if (!handBrake)
-                thrustForce2 = dir2 * thrustForce;
+                thrustForceV = orientationV * thrustForce;
 
 
             // drag force
-            Vector2 dragForce2 = -drag * velocity2 * velocity2.Length();
+            Vector2 dragForceV = -airFriction * this.velocityV * this.velocityV.Length();
 
-            Vector2 wheelLatForce = Vector2.Zero;
+            Vector2 wheelLatForceV = Vector2.Zero;
 
-            if (velocityLat2 != Vector2.Zero)
-                wheelLatForce -= Vector2.Normalize(velocityLat2) * 20f;// 0.9f; 
+            if (velocityLatV != Vector2.Zero)
+                wheelLatForceV -= Vector2.Normalize(velocityLatV) * 20f;// 0.9f; 
 
-            if (handBrake && velocityLong2 != Vector2.Zero)
-                wheelLatForce += -Vector2.Normalize(velocityLong2) * 20f;
+            if (handBrake && velocityLongV != Vector2.Zero)
+                wheelLatForceV += -Vector2.Normalize(velocityLongV) * 20f;
 
 
             // rolling resistance force
-            Vector2 rollingResistanceForce2 = -rollingResistance * velocityLong2;
+            Vector2 rollingResistanceForceV = -rollingFriction * velocityLongV;
 
-            Vector2 force2 = thrustForce2 + dragForce2 + rollingResistanceForce2 + wheelLatForce;
-
-            //Console.WriteLine(thrustForce2.Length() + " " + dragForce2.Length() + " " + rollingResistanceForce2.Length());
-
-            if (!staticFriction)
+            accelerationV = thrustForceV + dragForceV + rollingResistanceForceV + wheelLatForceV;
+            
+            if (staticFriction)
             {
-                orientationAngularVelocity += turnSpeed * elapsedThisFrameS;
-                orientationAngularVelocity *= 0.97f;
+                // steering is more accurate and less "spongy"
+                float targetVelocity = turnSpeed * 15f * elapsedThisFrameS;
+                orientationAngularVelocity += (targetVelocity - orientationAngularVelocity) * 0.5f;// * Math.Min(Math.Abs(velocity) * 0.01f, 1f) ;
             }
             else
             {
-                float targetVelocity = turnSpeed * 15f * elapsedThisFrameS;
-                orientationAngularVelocity += (targetVelocity - orientationAngularVelocity) * 0.5f;// * Math.Min(Math.Abs(velocity) * 0.01f, 1f) ;
+                // spongy steering
+                orientationAngularVelocity += turnSpeed * elapsedThisFrameS; // turning)
+                orientationAngularVelocity *= 0.97f; // decelerate angular velocity (friction)
             }
 
             orientation += orientationAngularVelocity * elapsedThisFrameS;
 
-            acceleration2 = force2;// / mass;
+            Vector2 velocityVOld = this.velocityV;
 
-            //if (handBrake)
-            //    velocityLong2 *= 0.99f;
-            //velocityLat2 *= 0.9f; // side rubber friction
-            //velocityLat2 -= 
+            // increase velocity by acceleration
+            this.velocityV += accelerationV * elapsedThisFrameS;
 
-            //velocity2 = velocityLong2 + velocityLat2;
+            if (Vector2.Dot(velocityVOld, this.velocityV) < 0) // if pointed at different direction, stop it first (prevent buggy back and forth motion)
+                this.velocityV = Vector2.Zero;
 
-            Vector2 vOld = velocity2;
+            // increase pos by velocity
+            positionV += this.velocityV * elapsedThisFrameS;
 
-            velocity2 += acceleration2 * elapsedThisFrameS;
-
-            if (Vector2.Dot(vOld, velocity2) < 0) // if pointed at different direction, stop it first
-                velocity2 = Vector2.Zero;
-
-            pos += velocity2 * elapsedThisFrameS;
-
-            while (goalIndex < env.goals.Count && mask.ColCircle(new M_Circle(env.goals[goalIndex], EnvCarRace.GOALRADIUS)))
+            // check if car collides with goals
+            while (goalIndex < env.goals.Count && mask.ColCircle(new M_Circle(env.goals[goalIndex], env.goalRadius)))
             {
                 goalIndex++;
-                if (goalIndex == EnvCarRace.GOALCOUNT)
+                if (goalIndex == env.goalCount)
                 {
                     frameTime = env.Frame;
                     control = false;
                 }
             }
-
-            //if (posX - length / 2f > G.camera.view.Right)
-            //    posX = G.camera.view.Left - length / 2f;
-            //if (posX + length / 2f < G.camera.view.Left)
-            //    posX = G.camera.view.Right + length / 2f;
-
-            //if (posY - length / 2f > G.camera.view.Bottom)
-            //    posY = G.camera.view.Top - length / 2f;
-            //if (posY + length / 2f < G.camera.view.Top)
-            //    posY = G.camera.view.Bottom + length / 2f;
-
         }
 
         public void Draw()
         {
-            //DrawM.Vertex.DrawCircleOutline(pos + mask.vertices[1], wheelRadius, Color.Black, 16);// dir2 * (-length / 2f + massCenterFromBack), 0.1f, Color.Black, 8f);
-            //DrawM.Vertex.DrawLineThin(pos + mask.vertices[1], pos + mask.vertices[1] + Calculate.AngleToVector(rearWheelAngle) * wheelRadius, Color.Black);
-
-            //Vector2 offset = mask.vertices[1] + new Vector2(0, wheelRadius);
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    DrawM.Vertex.DrawCircle(offset, 0.02f, Color.Black, 8);
-
-            //    offset.X += MathHelper.TwoPi * wheelRadius;
-            //}
-            //ContentLoader.fonts["lato-thin-mod_10"].Draw($"slipRatio: {slipRatio}\nkm/h: {velocity2.Length() * 60f * 60f / 1000f}", Anchor.TopLeft(G.camera.view.pos), Color.Black, new Vector2(0.05f * G.camera.zoom));
-
-
+            Color driftColor = Color.Black * 0.5f;// Color.Lerp(Color.Black, GetColor(), 1f);
             for (int i = 0; i < driftLines.Count; i++)
             {
-                driftLines[i].Draw(Color.Black);
+                driftLines[i].Draw(driftColor);
             }
-
-
+            
             mask.Draw(GetColor());
-            DrawM.Vertex.DrawLineThin(pos + dir2 * (-length / 2f + massCenterFromBack), pos + dir2 * length / 2f, Color.Black);
-            //DrawM.Vertex.DrawCircle(pos + dir2 * (-length / 2f + massCenterFromBack), 0.1f, Color.Black, 8f);
+
+            DrawM.Vertex.DrawLineThin(positionV, positionV + orientationV * length / 2f, Color.Black);
         }
-
-        float lookupTorqueCurve(float rpm, int gear)
-        {
-            switch (gear)
-            {
-                case 1: return 4000f;
-                case 2: return 2700f;
-                case 3: return 2000f;
-                case 4: return 1500f;
-                case 5: return 1100f;
-                case 6: return 750f;
-                default: return 0f;
-            }
-        }
-
-        float getTractionRatio(float slipRatio)
-        {
-            //if (slipRatio > 1f)
-            //    slipRatio = 1f;
-            //if (slipRatio < -1f)
-            //    slipRatio = -1f;
-            float traction = 0.06f / slipRatio;
-
-            if (traction > 1f)
-                traction = 1f;
-            else if (traction < -1f)
-                traction = -1f;
-
-            return traction;
-
-            //if (slipRatio > 0.06f)
-            //    return 1f / (0.06f / slipRatio);
-            //    //slipRatio = 0.06f;
-            //return 1f;// tractionConstant * slipRatio;
-        }
-
-
+        
         internal EnvCarRace.Action GetInternalAction()
         {
             return GetAction();
