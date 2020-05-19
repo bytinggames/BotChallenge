@@ -16,7 +16,7 @@ namespace BotChallenge.CarRace
         public int Height { get; } = 90;
         public const int TOTALFRAMES = 60 * 60 * 2; // 2min
 
-        public const int GOALCOUNT = 5;
+        public const int GOALCOUNT = 1;
         public const float GOALRADIUS = 3f;
 
         public const float FRICTION = 0.98f;
@@ -54,7 +54,7 @@ namespace BotChallenge.CarRace
         SpriteFont font;
 
         public static Matrix matrix;
-        
+
         public EnvCarRace(Type[] botTypes)
         {
             Collision.minDist = 0.01f;
@@ -93,41 +93,20 @@ namespace BotChallenge.CarRace
             }
 
             float[] scores = new float[bots.Length];
-            /*
-            List<Bot> r = new List<Bot>();
-            for (int i = 0; i < bots.Length; i++)
+
+            if (bots.Length > 1)
             {
-                int j;
-                for (j = 0; j < r.Count; j++)
+                for (int i = 0; i < bots.Length; i++)
                 {
-                    if (bots[i].timeAlive < r[j].timeAlive)
-                        break;
+                    scores[i] = bots.Count(f => f.frameTime >= bots[i].frameTime) - 1;
                 }
-                r.Insert(j, bots[i]);
-            }
-
-            for (int i = 0; i < r.Count; i++)
-            {
-                scores[r[i].Id] = i;
-            }*/
-
-            if (bots[0].frameTime == bots[1].frameTime)
-            {
-                scores = new float[] { 1, 1 };
             }
             else
             {
-                if (bots[0].frameTime > bots[1].frameTime)
-                    scores = new float[] { 2, 0 };
-                else
-                    scores = new float[] { 0, 2 };
+                scores[0] = bots[0].frameTime;
             }
-
-            //for (int i = 0; i < scores.Length; i++)
-            //{
-            //    scores[i] = bots[i].damageDealt;
-            //}
-            return scores;// bots.Select(f => (float)f.wins).Cast<float>().ToArray();
+            
+            return scores;
         }
         
         void MonoMethods.LoadContent(SpriteBatch spriteBatch, ContentManager content, GraphicsDeviceManager graphics)
@@ -156,7 +135,7 @@ namespace BotChallenge.CarRace
 
         void MyUpdate()
         {
-            if ((TOTALFRAMES > 0 && frame == TOTALFRAMES))// || bots.Count(f => !f.Alive) >= bots.Length - 1) //either timeout or all bots dead but one
+            if ((TOTALFRAMES > 0 && frame == TOTALFRAMES) || bots.All(f => f.goalIndex == GOALCOUNT)) //either timeout or all bots dead but one
             {
                 gameEnd = true;
             }
@@ -170,10 +149,10 @@ namespace BotChallenge.CarRace
 
             Action[] actions = new Action[bots.Length];
 
-            for (int j = 0; j < bots.Length; j++)
+            for (int i = 0; i < bots.Length; i++)
             {
-                if (bots[j].Alive)
-                    actions[j] = bots[j].GetInternalAction();
+                if (bots[i].Alive && bots[i].control)
+                    actions[i] = bots[i].GetInternalAction();
             }
 
             ExecuteActions(actions);

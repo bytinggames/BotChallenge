@@ -76,8 +76,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Environment\Bot.cs" />
-    <Compile Include="Environment\EnvCarRace.cs" />
     <Compile Include="HumanWASD.cs" />
     <Compile Include="Random.cs" />
     <Compile Include="Human.cs" />

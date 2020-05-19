@@ -114,7 +114,7 @@ namespace BotChallenge.CarRace
 
         #endregion
 
-        bool control;
+        internal bool control;
 
         protected Random rand;
         protected EnvCarRace env;
@@ -283,6 +283,11 @@ namespace BotChallenge.CarRace
             while (goalIndex < env.goals.Count && mask.ColCircle(new M_Circle(env.goals[goalIndex], EnvCarRace.GOALRADIUS)))
             {
                 goalIndex++;
+                if (goalIndex == EnvCarRace.GOALCOUNT)
+                {
+                    frameTime = env.Frame;
+                    control = false;
+                }
             }
 
             //if (posX - length / 2f > G.camera.view.Right)
@@ -319,7 +324,8 @@ namespace BotChallenge.CarRace
 
 
             mask.Draw(Color.White);
-            DrawM.Vertex.DrawCircle(pos + dir2 * (-length / 2f + massCenterFromBack), 0.1f, Color.Black, 8f);
+            DrawM.Vertex.DrawLineThin(pos + dir2 * (-length / 2f + massCenterFromBack), pos + dir2 * length / 2f, Color.Black);
+            //DrawM.Vertex.DrawCircle(pos + dir2 * (-length / 2f + massCenterFromBack), 0.1f, Color.Black, 8f);
         }
 
         float lookupTorqueCurve(float rpm, int gear)

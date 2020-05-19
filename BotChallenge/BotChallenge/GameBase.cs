@@ -10,7 +10,7 @@ using JuliHelper;
 
 namespace BotChallenge
 {
-    public class GameBase : Game
+    class GameBase : Game
     {
         static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;

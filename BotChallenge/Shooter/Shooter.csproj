@@ -94,8 +94,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rand.cs" />
-    <Compile Include="Environment\Bullet.cs" />
-    <Compile Include="Environment\EnvShooter.cs" />
     <Compile Include="Simon.cs" />
     <Compile Include="Zachi2.cs" />
     <Compile Include="Zachi1.cs" />

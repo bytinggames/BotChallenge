@@ -86,12 +86,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bumper\Bullet.cs" />
+    <Compile Include="Bumper\EnvBumper.cs" />
     <Compile Include="Env.cs" />
+    <Compile Include="CarRace\Bot.cs" />
+    <Compile Include="CarRace\EnvCarRace.cs" />
     <Compile Include="MonoMethods.cs" />
+    <Compile Include="Poker\Card.cs" />
+    <Compile Include="Poker\CheckCards.cs" />
+    <Compile Include="Poker\EnvPoker.cs" />
+    <Compile Include="RockPaperScissors\EnvRockPaperScissors.cs" />
     <Compile Include="RunManagerTournament.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunManager.cs" />
     <Compile Include="GameBase.cs" />
+    <Compile Include="Shooter\Bullet.cs" />
+    <Compile Include="Shooter\EnvShooter.cs" />
+    <Compile Include="Snake\EnvSnake.cs" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

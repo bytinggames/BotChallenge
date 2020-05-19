@@ -46,9 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Environment\Card.cs" />
-    <Compile Include="Environment\CheckCards.cs" />
-    <Compile Include="Environment\EnvPoker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Human.cs" />
