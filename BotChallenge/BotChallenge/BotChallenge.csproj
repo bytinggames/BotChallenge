@@ -88,8 +88,6 @@
   <ItemGroup>
     <Compile Include="Bumper\Bullet.cs" />
     <Compile Include="Bumper\EnvBumper.cs" />
-    <Compile Include="CarRace\Bot.cs" />
-    <Compile Include="CarRace\EnvCarRace.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="MonoMethods.cs" />
     <Compile Include="Poker\Card.cs" />

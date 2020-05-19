@@ -195,7 +195,7 @@ namespace BotChallenge.Snake
             sw.Start();
         }
 
-        internal override float[] Loop()
+        public override float[] Loop()
         {
             if (Visible)
             {

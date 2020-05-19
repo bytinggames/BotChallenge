@@ -15,11 +15,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Shooter
 {
-    class Zachi2 : EnvShooter.Bot
+    class Zachi3 : EnvShooter.Bot
     {
 
         EnvShooter.Action lastAction;
-        Color color = Color.DeepPink;
+        Color color = Color.DeepPink * 0.5f;
 
 
         protected override Color GetColor()
@@ -27,7 +27,7 @@ namespace Shooter
             return color;
         }
 
-        public Zachi2()
+        public Zachi3()
         {
         }
 
@@ -46,26 +46,11 @@ namespace Shooter
             if (Charge >= 0.99)
                 do_charge = false;
 
+            Bullet[] active_bullets = this.env.Bullets.ToList().FindAll(x => !x.Collectible).ToArray();
+            Vector2[,] bullet_poses = BulletSim.Get_Bullet_Poses(active_bullets, this.map, 120);
 
-
-            int min_col = int.MaxValue;
-            int col_idx = -1;
-
-            for (int i = 0; i < this.env.Bullets.Length; i++)
-            {
-                if (this.env.Bullets[i].Collectible)
-                    continue;
-                int player_collision = BulletSim2.CollidesWith(this.Pos, 0.4f, this.env.Bullets[i], this.map, 120);
-                if (player_collision > -1)
-                {
-                    if (player_collision < min_col)
-                    {
-                        min_col = player_collision;
-                        col_idx = i;
-                    }
-
-                }
-            }
+            int player_collision = BulletSim.CollidesWith(this.Pos, 0.4f, bullet_poses);
+            int min_col = player_collision > -1 ? player_collision : int.MaxValue;
 
             if (min_col != int.MaxValue)
             {
@@ -91,27 +76,18 @@ namespace Shooter
                     int[] col_steps = new int[poses.Length];
                     for (int j = 0; j < col_steps.Length; j++)
                     {
+                        // Border check
                         if (poses[j].X - 0.4f < 1 || poses[j].X + 0.4f > 19 || poses[j].Y - 0.4f < 1 || poses[j].Y + 0.4f > 19)
                         {
                             col_steps[j] = 0;
                             continue;
                         }
 
-                        int min_bullet = int.MaxValue;
-                        int min_bullet_idx = -1;
-                        for (int y = 0; y < this.env.Bullets.Length; y++)
-                        {
-                            int c_steps = BulletSim2.CollidesWith(poses[j], 0.4f, this.env.Bullets[y], this.map, 120);
-                            // closest bullet death found
-                            if (c_steps > -1 && c_steps < min_bullet)
-                            {
-                                min_bullet = c_steps;
-                                min_bullet_idx = y;
-                            }
-                        }
+                        // Bullet collision check
+                        int min_bullet = BulletSim.CollidesWith(poses[j], 0.4f, bullet_poses);
 
                         // No collisions
-                        if (min_bullet == int.MaxValue)
+                        if (min_bullet == -1)
                         {
                             col_steps[j] = -1;
                             break;
@@ -131,7 +107,7 @@ namespace Shooter
                             minus_one_found = true;
                             break;
                         }
-                        else if (col_steps[i] > max_dist)
+                        else if (col_steps[j] > max_dist)
                         {
                             max_dist = col_steps[j];
                             max_dist_idx = j;
@@ -148,11 +124,11 @@ namespace Shooter
 
                 move_target = point_out;
 
-                color = Color.Purple;
+                color = Color.Purple * 0.5f;
             }
             else
             {
-                color = Color.HotPink;
+                color = Color.HotPink * 0.5f;
                 move_target = Pos;
 
 
@@ -169,7 +145,11 @@ namespace Shooter
                     }
 
                     if (min_len_idx > -1)
-                        move_target = bullets[min_len_idx].Pos;
+                    {
+                        // Check if it is safe to move towards the desired location
+                        int collision = BulletSim.CollidesWith(bullets[min_len_idx].Pos, 0.4f, bullet_poses);
+                        move_target = collision == -1 ? bullets[min_len_idx].Pos : this.Pos;
+                    }
                     else
                         move_target = this.Pos;
                 }
@@ -211,9 +191,60 @@ namespace Shooter
     }
 
 
-    static class BulletSim2
+    static class BulletSim
     {
 
+        public static Vector2[,] Get_Bullet_Poses(Bullet[] bullets, bool[,] map, int steps = 120)
+        {
+            EnvShooter env = create_env();
+            Bullet[] n_bullets = new Bullet[bullets.Length];
+            Vector2[,] bullet_positions = new Vector2[steps, n_bullets.Length];
+
+            for (int i = 0; i < bullets.Length; i++)
+                n_bullets[i] = new Bullet(bullets[i].Pos, bullets[i].Velocity, 2982397 + i, bullets[i].Color, env);
+
+            SetValue(env, "map", map);
+
+            for (int j = 0; j < n_bullets.Length; j++)
+                for (int i = 0; i < steps; i++)
+                {
+                    call(n_bullets[j], "Move");
+
+                    bullet_positions[i, j] = new Vector2(n_bullets[j].Pos.X, n_bullets[j].Pos.Y);
+
+                    Vector2 velocity = n_bullets[j].Velocity * 0.99f;
+                    SetValue(n_bullets[j], "velocity", velocity);
+
+                    if (velocity != Vector2.Zero)
+                    {
+                        if (velocity.Length() < 0.1f)
+                        {
+                            // NOTHING HIT!
+                            for (int y = i; y < steps; y++)
+                                bullet_positions[y, j] = new Vector2(n_bullets[j].Pos.X, n_bullets[j].Pos.Y);
+                            break;
+                        }
+
+                        if (velocity.Length() < 0.01f)
+                            velocity = Vector2.Zero;
+                    }
+
+                }
+            return bullet_positions;
+
+        }
+
+        public static int CollidesWith(Vector2 pos, float radius, Vector2[,] bullet_poses)
+        {
+            for (int i = 0; i < bullet_poses.GetLength(0); i++)       // Steps
+                for (int j = 0; j < bullet_poses.GetLength(1); j++)     // Bullets
+                {
+                    if (bullet_poses[i, j].X + 0.2f >= pos.X - radius && bullet_poses[i, j].X - 0.2f <= pos.X + radius &&
+                        bullet_poses[i, j].Y + 0.2f >= pos.Y - radius && bullet_poses[i, j].Y - 0.2f <= pos.Y + radius)
+                        return i;
+                }
+            return -1;
+        }
 
         public static int CollidesWith(Vector2 pos, float radius, Bullet b, bool[,] map, int steps = 60)
         {

@@ -51,7 +51,7 @@ namespace BotChallenge.CarRace
             this.bots = GetBots<Bot>(botTypes);
         }
 
-        internal override float[] Loop()
+        public override float[] Loop()
         {
             if (Visible)
             {

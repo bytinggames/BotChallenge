@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace BotChallenge
 {
-    internal interface MonoMethods
+    public interface MonoMethods
     {
         void LoadContent(SpriteBatch spriteBatch, ContentManager content, GraphicsDeviceManager graphics);
         void Update();

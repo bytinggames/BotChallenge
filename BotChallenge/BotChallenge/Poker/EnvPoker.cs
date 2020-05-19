@@ -164,7 +164,7 @@ namespace BotChallenge.Poker
             Kreuz
         }
 
-        internal override float[] Loop()
+        public override float[] Loop()
         {
             string output = "";
             for (int i = 0; i < bots.Length; i++)

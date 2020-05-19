@@ -19,7 +19,7 @@ namespace BotChallenge
             set { visible = value; }
         }
 
-        internal abstract float[] Loop();
+        public abstract float[] Loop();
         internal virtual void Dispose() { }
 
         protected T[] GetBots<T>(Type[] types)

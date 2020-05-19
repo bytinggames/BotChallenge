@@ -24,7 +24,7 @@ namespace Shooter
 
         protected override Color GetColor()
         {
-            return Color.Orange;
+            return Color.Orange * 0.5f;
         }
 
         public Julian3_2()
@@ -93,7 +93,7 @@ namespace Shooter
 
 
 
-            if (enemies.Any(f => f.Ammo == 0) || Vector2.Distance(enemies[0].Pos, Pos) < 6f || env.Frame > 5 * 60 )
+            if (enemies.Any(f => f.Ammo == 0) || Vector2.Distance(enemies[0].Pos, Pos) < 6f || env.Frame > 5 * 60)
             {
                 action.charge = true;
             }
@@ -110,7 +110,7 @@ namespace Shooter
             float nearestEnemyDist = -1f;
             bool bulletEvasion = false;
             bool anyFriendly = env.Bullets.Any(f => f.Collectible);
-            
+
             for (int i = 0; i < env.Bullets.Length; i++)
             {
                 dist = env.Bullets[i].Pos - Pos;
@@ -182,7 +182,7 @@ namespace Shooter
                     action.down = true;
                 if (Pos.Y > env.Height * (1 - border))
                     action.up = true;
-                
+
                 bool u = action.up;
                 action.up = action.right;
                 action.right = action.down;
@@ -194,7 +194,7 @@ namespace Shooter
                 if (rand.Next(60) == 0 && reverseDir != Vector2.Dot(dir, enemies[0].Pos - Pos) > 0f)
                     reverseDir = !reverseDir;
 
-                    if (reverseDir) 
+                if (reverseDir)
                 {
                     bool a = action.up;
                     action.up = action.down;
@@ -229,7 +229,7 @@ namespace Shooter
                 if (action.right || action.left || action.up || action.down)
                     wallSlide = true;
             }
-            
+
             if (!wallSlide)
             {
                 float noobDist = -1f;
@@ -289,7 +289,7 @@ namespace Shooter
             {
                 VelocityToAction(ref action, Pos - nearestEnemy.Pos);
             }
-            
+
 
             return action;
         }

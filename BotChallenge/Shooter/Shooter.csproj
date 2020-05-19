@@ -83,6 +83,7 @@
     <Compile Include="Julian1.cs" />
     <Compile Include="Julian3_2.cs" />
     <Compile Include="Julian3.cs" />
+    <Compile Include="Julian4.cs" />
     <Compile Include="Julian_Fun.cs" />
     <Compile Include="Julian2.cs" />
     <Compile Include="MyBot.cs" />
@@ -96,6 +97,8 @@
     <Compile Include="Simon.cs" />
     <Compile Include="Zachi2.cs" />
     <Compile Include="Zachi1.cs" />
+    <Compile Include="Zachi3.cs" />
+    <Compile Include="Zachi4.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
