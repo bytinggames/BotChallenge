@@ -29,7 +29,7 @@ namespace CarRace
 
         protected override Color GetColor()
         {
-            return Color.White;
+            return Color.LightGray;
         }
     }
 }

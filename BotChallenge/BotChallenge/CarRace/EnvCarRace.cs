@@ -16,7 +16,7 @@ namespace BotChallenge.CarRace
         public int Height { get; } = 90;
         public const int TOTALFRAMES = 60 * 60 * 2; // 2min
 
-        public const int GOALCOUNT = 1;
+        public const int GOALCOUNT = 5;
         public const float GOALRADIUS = 3f;
 
         public const float FRICTION = 0.98f;
@@ -226,11 +226,13 @@ namespace BotChallenge.CarRace
                     DrawM.Vertex.DrawLine(goals[i], goals[i + 1], Color.DeepSkyBlue, 0.2f);
                 }
 
+                DrawM.Vertex.DrawCircleOutline(goals[i], GOALRADIUS, Color.DeepSkyBlue, 8f);
+
                 float angle = 0f;
                 float fov = MathHelper.TwoPi / bots.Length;
                 for (int j = 0; j < bots.Length; j++)
                 {
-                    Color color = bots[j].goalIndex > i ? Color.Lime : bots[j].goalIndex == i ? Color.White : Color.DeepSkyBlue;
+                    Color color = bots[j].goalIndex > i ? Color.Transparent : bots[j].goalIndex == i ? bots[j].GetInternalColor() : Color.DeepSkyBlue;
                     DrawM.Vertex.DrawCone(goals[i], GOALRADIUS, angle, fov, color, color, 8f);
                     angle += fov;
                 }

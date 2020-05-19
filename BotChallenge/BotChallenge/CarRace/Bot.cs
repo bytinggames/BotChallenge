@@ -193,6 +193,8 @@ namespace BotChallenge.CarRace
 
                 handBrake = Input.space.down;
             }
+            else
+                brakePedal = 1f;
             #endregion
 
             bool oldStaticFriction = staticFriction;
@@ -323,7 +325,7 @@ namespace BotChallenge.CarRace
             }
 
 
-            mask.Draw(Color.White);
+            mask.Draw(GetColor());
             DrawM.Vertex.DrawLineThin(pos + dir2 * (-length / 2f + massCenterFromBack), pos + dir2 * length / 2f, Color.Black);
             //DrawM.Vertex.DrawCircle(pos + dir2 * (-length / 2f + massCenterFromBack), 0.1f, Color.Black, 8f);
         }
