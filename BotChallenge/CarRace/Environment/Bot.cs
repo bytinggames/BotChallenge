@@ -17,6 +17,8 @@ namespace BotChallenge.CarRace
 
         public bool Alive = true;
 
+        public int goalIndex { get; private set; } = 0;
+
 
         #region constants
 
@@ -130,10 +132,11 @@ namespace BotChallenge.CarRace
                 posX += 10;
         }
 
-        internal void Initialize(EnvCarRace env, Vector2 pos, int id)
+        internal void Initialize(EnvCarRace env, Vector2 pos, float orientation, int id)
         {
             this.env = env;
             this.pos = pos;
+            this.orientation = orientation;
             this.id = id;
             
             rand = Env.constRand;
@@ -169,9 +172,9 @@ namespace BotChallenge.CarRace
 
             if (control)
             {
-                throttlePedal = action.accelerate;
-                
-                brakePedal = action.brake;
+                throttlePedal = Math.Min(1f, Math.Max(0f, action.accelerate));
+
+                brakePedal = Math.Min(1f, Math.Max(0f, action.brake));
 
 
                 float cHandling = handling;
@@ -182,7 +185,7 @@ namespace BotChallenge.CarRace
                     if (cHandling > handling)
                         cHandling = handling;
 
-                    turnSpeed = action.steer * cHandling * velocity;
+                    turnSpeed = Math.Min(1f, Math.Max(-1f, action.steer)) * cHandling * velocity;
                 }
 
                 //if (turnSpeed == 0)
@@ -277,6 +280,11 @@ namespace BotChallenge.CarRace
 
             pos += velocity2 * elapsedThisFrameS;
 
+            while (goalIndex < env.goals.Count && mask.ColCircle(new M_Circle(env.goals[goalIndex], EnvCarRace.GOALRADIUS)))
+            {
+                goalIndex++;
+            }
+
             //if (posX - length / 2f > G.camera.view.Right)
             //    posX = G.camera.view.Left - length / 2f;
             //if (posX + length / 2f < G.camera.view.Left)
@@ -301,7 +309,6 @@ namespace BotChallenge.CarRace
 
             //    offset.X += MathHelper.TwoPi * wheelRadius;
             //}
-            Drawer.roundPositionTo = 0f;
             //ContentLoader.fonts["lato-thin-mod_10"].Draw($"slipRatio: {slipRatio}\nkm/h: {velocity2.Length() * 60f * 60f / 1000f}", Anchor.TopLeft(G.camera.view.pos), Color.Black, new Vector2(0.05f * G.camera.zoom));
 
 
@@ -313,7 +320,6 @@ namespace BotChallenge.CarRace
 
             mask.Draw(Color.White);
             DrawM.Vertex.DrawCircle(pos + dir2 * (-length / 2f + massCenterFromBack), 0.1f, Color.Black, 8f);
-
         }
 
         float lookupTorqueCurve(float rpm, int gear)

@@ -12,9 +12,12 @@ namespace BotChallenge.CarRace
 {
     public class EnvCarRace : Env, MonoMethods
     {
-        public int Width { get; } = 20;
-        public int Height { get; } = 20;
+        public int Width { get; } = 160;
+        public int Height { get; } = 90;
         public const int TOTALFRAMES = 60 * 60 * 2; // 2min
+
+        public const int GOALCOUNT = 5;
+        public const float GOALRADIUS = 3f;
 
         public const float FRICTION = 0.98f;
 
@@ -22,8 +25,17 @@ namespace BotChallenge.CarRace
         
         public struct Action
         {
+            /// <summary>
+            /// [0,1]
+            /// </summary>
             public float accelerate;
+            /// <summary>
+            /// [-1,1]
+            /// </summary>
             public float steer;
+            /// <summary>
+            /// [0,1]
+            /// </summary>
             public float brake;
         }
 
@@ -49,6 +61,20 @@ namespace BotChallenge.CarRace
             CollisionResult.minDist = 0;
 
             this.bots = GetBots<Bot>(botTypes);
+
+            goals = new List<Vector2>();
+
+            int space = 4;
+            for (int i = 0; i < GOALCOUNT; i++)
+            {
+                Vector2 pos = Vector2.Zero;
+                do
+                {
+                    pos = new Vector2(constRand.Next(space, Width - space), constRand.Next(space, Height - space)) + new Vector2(0.5f);
+                } while (goals.Any(f => Vector2.Distance(pos, f) < 3f));
+
+                goals.Add(pos);
+            }
         }
 
         public override float[] Loop()
@@ -113,28 +139,24 @@ namespace BotChallenge.CarRace
 
             texBot = content.Load<Texture2D>("Shooter/Textures/bot");
             font = content.Load<SpriteFont>("Fonts/lato-thin-mod_10");
-            
+
+            int x, y;
+            Vector2 pos;
+            x = constRand.Next(Width);
+            y = constRand.Next(Height);
+            pos = new Vector2(x + 0.5f, y + 0.5f);
+
+            float orientation = constRand.NextFloat() * MathHelper.TwoPi;
+
             for (int i = 0; i < this.bots.Length; i++)
             {
-                List<Bot> botsList = this.bots.ToList();
-                botsList.RemoveAt(i);
-
-                int x, y;
-                Vector2 pos;
-                do
-                {
-                    x = constRand.Next(Width) - Width / 2;
-                    y = constRand.Next(Height) - Height / 2;
-                    pos = new Vector2(x + 0.5f, y + 0.5f);
-                } while (this.bots.Any(f => f.pos == pos));
-
-                this.bots[i].Initialize(this, pos, i);
+                this.bots[i].Initialize(this, pos, orientation, i);
             }
         }
 
         void MyUpdate()
         {
-            if ((TOTALFRAMES > 0 && frame == TOTALFRAMES) || bots.Count(f => !f.Alive) >= bots.Length - 1) //either timeout or all bots dead but one
+            if ((TOTALFRAMES > 0 && frame == TOTALFRAMES))// || bots.Count(f => !f.Alive) >= bots.Length - 1) //either timeout or all bots dead but one
             {
                 gameEnd = true;
             }
@@ -181,29 +203,62 @@ namespace BotChallenge.CarRace
 
         void MonoMethods.Draw(SpriteBatch spriteBatch)
         {
-
-            float scale = Math.Min((float)graphics.PreferredBackBufferWidth / Width, (float)graphics.PreferredBackBufferHeight / Height);
+            float wScale = (float)graphics.PreferredBackBufferWidth / Width;
+            float hScale = (float)graphics.PreferredBackBufferHeight / Height;
+            float scale = Math.Min(wScale, hScale);
 
             float realW = graphics.PreferredBackBufferWidth / scale;
             float realH = graphics.PreferredBackBufferHeight / scale;
 
-            scale *= 0.25f;
+            //scale *= 0.25f;
 
-            Vector2 shift = new Vector2(realW, realH) / 2f;// - new Vector2(width, height) / 2f;
+            Vector2 shift = Vector2.Zero;// new Vector2(realW, realH) / 2f;// - new Vector2(width, height) / 2f;
+
+            if (hScale > wScale)
+            {
+                shift.Y += (realH - Height) * 0.5f;
+            }
+            else if (wScale > hScale)
+            {
+                shift.X += (realW - Width) * 0.5f;
+            }
+
 
             matrix =  Matrix.CreateTranslation(new Vector3(shift, 0)) * Matrix.CreateScale(scale);
             //DrawM.basicEffect.SetWorldAndInvTransp(matrix);
             DrawM.basicEffect.World = matrix;
             DrawM.scale = scale;
 
-            //spriteBatch.GraphicsDevice.Clear(new Color(128,128,128));
-            spriteBatch.GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.GraphicsDevice.Clear(new Color(128,128,128));
+            //spriteBatch.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin(SpriteSortMode.Deferred,null,SamplerState.PointClamp,null,null,null,matrix);
 
-            //DrawM.Vertex.DrawRectangle(new M_Rectangle(0, 0, width, height), Color.CornflowerBlue);
-            //DrawM.Vertex.DrawCircle(Vector2.Zero, MAPRADIUS, Color.CornflowerBlue, 16f);
-            
+            Drawer.depth = new DepthLayer(0f);
+
+            DrawM.Vertex.DrawRectangle(new M_Rectangle(0, 0, Width, Height), Color.CornflowerBlue);
+
+
+            for (int i = 0; i < goals.Count; i++)
+            {
+                if (i + 1 < goals.Count)
+                {
+
+                    DrawM.Vertex.DrawLine(goals[i], goals[i + 1], Color.DeepSkyBlue, 0.2f);
+                }
+
+                float angle = 0f;
+                float fov = MathHelper.TwoPi / bots.Length;
+                for (int j = 0; j < bots.Length; j++)
+                {
+                    Color color = bots[j].goalIndex > i ? Color.Lime : bots[j].goalIndex == i ? Color.White : Color.DeepSkyBlue;
+                    DrawM.Vertex.DrawCone(goals[i], GOALRADIUS, angle, fov, color, color, 8f);
+                    angle += fov;
+                }
+                //DrawM.Vertex.DrawCircle(goals[i], GOALRADIUS, Color.Lime, 16f);
+                //font.Draw(i.ToString(), Anchor.Center(goals[i]), Color.Black, new Vector2(0.2f));
+            }
+
 
             string text;
 
@@ -220,6 +275,12 @@ namespace BotChallenge.CarRace
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp);
+            
+            for (int i = 0; i < goals.Count; i++)
+            {
+                Vector2 pos = Vector2.Transform(goals[i], matrix);
+                font.Draw((i + 1).ToString(), Anchor.Center(pos), Color.Black);
+            }
 
             text = "";
 
