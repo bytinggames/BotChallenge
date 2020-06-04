@@ -19,7 +19,7 @@ namespace CarRace
             {
                 typeof(Human),
                 //typeof(HumanWASD),
-                typeof(EmptyBot),
+                //typeof(EmptyBot),
             };
 
             RunManagerTournament runManager = new RunManagerTournament(typeof(EnvCarRace), bots, bots.Length, 1, visible, OutputMode.ResultOfEveryIteration, new System.Random().Next());
