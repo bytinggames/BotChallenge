@@ -502,21 +502,32 @@ namespace JuliHelper
 
         #region Rectangles
         
-                public static M_Rectangle Encapsulate(this M_Rectangle rect1, M_Rectangle rect2)
-                {
-                    float x1, y1, x2, y2;
-                    x1 = Math.Min(rect1.Left, rect2.Left);
-                    y1 = Math.Min(rect1.Top, rect2.Top);
-                    x2 = Math.Max(rect1.Right, rect2.Right);
-                    y2 = Math.Max(rect1.Bottom, rect2.Bottom);
-                    return new M_Rectangle(x1, y1, x2 - x1, y2 - y1);
-                }
+        public static M_Rectangle Encapsulate(this M_Rectangle rect1, M_Rectangle rect2)
+        {
+            float x1, y1, x2, y2;
+            x1 = Math.Min(rect1.Left, rect2.Left);
+            y1 = Math.Min(rect1.Top, rect2.Top);
+            x2 = Math.Max(rect1.Right, rect2.Right);
+            y2 = Math.Max(rect1.Bottom, rect2.Bottom);
+            return new M_Rectangle(x1, y1, x2 - x1, y2 - y1);
+        }
+        public static M_Rectangle EncapsulateSelf(this M_Rectangle rect1, M_Rectangle rect2)
+        {
+            float x1, y1, x2, y2;
+            x1 = Math.Min(rect1.Left, rect2.Left);
+            y1 = Math.Min(rect1.Top, rect2.Top);
+            x2 = Math.Max(rect1.Right, rect2.Right);
+            y2 = Math.Max(rect1.Bottom, rect2.Bottom);
+            rect1.pos = new Vector2(x1, y1);
+            rect1.size = new Vector2(x2 - x1, y2 - y1);
+            return rect1;
+        }
 
         #endregion
 
         #region Matrices
 
-                public static string ToMyString(this Matrix matrix)
+        public static string ToMyString(this Matrix matrix)
                 {
                     return "{ " + matrix.M11 + " " + matrix.M12 + " " + matrix.M13 + " " + matrix.M14 + " | "
                          + matrix.M21 + " " + matrix.M22 + " " + matrix.M23 + " " + matrix.M24 + " | "

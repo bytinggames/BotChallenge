@@ -36,6 +36,10 @@ namespace JuliHelper
         {
             Initialize(new Vector2(rect.X, rect.Y), new Vector2(rect.Width, rect.Height));
         }
+        public M_Rectangle(M_Rectangle rect)
+        {
+            Initialize(rect.pos, rect.size);
+        }
         public M_Rectangle(Vector2 pos, Vector2 size, Vector2 originNormalized, bool round = false)
         {
             pos -= size * originNormalized;
