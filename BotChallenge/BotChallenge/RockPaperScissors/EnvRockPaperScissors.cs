@@ -56,7 +56,7 @@ namespace BotChallenge.RockPaperScissors
             bots[1].Initialize(bots[0]);
         }
 
-        public override float[] Loop()
+        internal override float[] Loop()
         {
             Action[] actions = new Action[bots.Length];
 

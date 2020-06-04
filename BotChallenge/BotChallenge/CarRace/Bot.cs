@@ -9,20 +9,41 @@ namespace BotChallenge.CarRace
 {
     public abstract class Bot
     {
+        /// <summary>
+        /// use this for being random
+        /// </summary>
         protected Random rand;
+        /// <summary>
+        /// the environment in which the run takes place
+        /// </summary>
         protected EnvCarRace env;
         private int id;
 
+        /// <summary>
+        /// the output of your bot
+        /// </summary>
         internal EnvCarRace.Action action;
 
         #region constant physic variables
-
+        /// <summary>
+        /// car length in meters
+        /// </summary>
         public readonly float length = 2.5f; // m
+        /// <summary>
+        /// car width in meters
+        /// </summary>
         public readonly float width = 1.7f; // m
 
+        /// <summary>
+        /// how hard it escalates
+        /// </summary>
         public readonly float power = 40f;
-        public readonly float handling = 1f;
 
+        /// <summary>
+        /// how hard it turns
+        /// </summary>
+        public readonly float handling = 1f;
+        
         public readonly float airFriction = 0.01f;
         public readonly float rollingFriction = 0.1f;
 
@@ -30,22 +51,56 @@ namespace BotChallenge.CarRace
 
         #region information variables
 
+        /// <summary>
+        /// all goals on this map in correct order
+        /// </summary>
         protected List<Vector2> goals;
+        /// <summary>
+        /// current goal for this bot
+        /// </summary>
         protected Vector2 currentGoalV => goals[goalIndex];
 
         #endregion
 
+        /// <summary>
+        /// current goal index. Starts with 0
+        /// </summary>
         public int goalIndex { get; private set; } = 0;
 
         
         #region dynamic physics variables
 
+        /// <summary>
+        /// current velocity in meters per second
+        /// </summary>
         public Vector2 velocityV { get; private set; } // m/s
-        internal M_Polygon mask;
-        public M_Polygon Mask { get { return (M_Polygon)mask.Clone(); } }
 
+        /// <summary>
+        /// accleration vector in meters per second^2
+        /// </summary>
+        public Vector2 accelerationV { get; private set; }
+
+        internal M_Polygon mask;
+        /// <summary>
+        /// gets the physical shape of the car.
+        /// but this can be neglected, cause there are no collisions
+        /// </summary>
+        internal M_Polygon Mask { get { return (M_Polygon)mask.Clone(); } }
+
+        /// <summary>
+        /// A vector pointing in the direction in which the car is looking
+        /// </summary>
         public Vector2 orientationV { get; private set; }
+
+        /// <summary>
+        /// A vector pointing to the right of the car
+        /// </summary>
         public Vector2 directionRightV { get; private set; }
+
+        /// <summary>
+        /// Angular velocity of the car in radians per second
+        /// it does not affect the car movement thaat much.
+        /// </summary>
         public float orientationAngularVelocity { get; private set; }
 
         private float _orientation;
@@ -58,6 +113,9 @@ namespace BotChallenge.CarRace
 
         #region accessors
 
+        /// <summary>
+        /// car position in meters
+        /// </summary>
         public Vector2 positionV
         {
             get { return mask.pos; }
@@ -66,6 +124,9 @@ namespace BotChallenge.CarRace
                 mask.pos = value;
             }
         }
+        /// <summary>
+        /// car position x in meters
+        /// </summary>
         public float positionX
         {
             get { return mask.pos.X; }
@@ -74,6 +135,9 @@ namespace BotChallenge.CarRace
                 mask.X = value;
             }
         }
+        /// <summary>
+        /// car position y in meters
+        /// </summary>
         public float positionY
         {
             get { return mask.pos.Y; }
@@ -83,7 +147,12 @@ namespace BotChallenge.CarRace
             }
         }
 
-        internal float orientation
+        /// <summary>
+        /// Orientation of the car in radians.
+        /// 0 = right.
+        /// pi/2 = down
+        /// </summary>
+        public float orientation
         {
             get { return _orientation; }
             private set
@@ -97,9 +166,6 @@ namespace BotChallenge.CarRace
                 directionRightV = Calculate.AngleToVector(orientation + MathHelper.PiOver2);
             }
         }
-
-        public float goalRadius => env.goalRadius;
-        public int frame => env.Frame;
 
         #endregion
 
@@ -129,13 +195,13 @@ namespace BotChallenge.CarRace
             rand = Env.constRand;
         }
         
-
-        public Vector2 accelerationV { get; private set; }
-
+        /// <summary>
+        /// if currently static friction is happening on wheels vs ground (or false: kinetic friction -> drifting)
+        /// </summary>
         public bool staticFriction { get; private set; } = true;
         internal int frameTime;
 
-        public void Update()
+        internal void Update()
         {
             // seconds passed since last update (always the same to make replays work)
             float elapsedThisFrameS = 1f / 60f;
@@ -266,7 +332,7 @@ namespace BotChallenge.CarRace
             }
         }
 
-        public void Draw()
+        internal void Draw()
         {
             Color driftColor = Color.Black * 0.5f;// Color.Lerp(Color.Black, GetColor(), 1f);
             for (int i = 0; i < driftLines.Count; i++)
@@ -283,6 +349,10 @@ namespace BotChallenge.CarRace
         {
             return GetAction();
         }
+        /// <summary>
+        /// this function is called every frame. Here happens the magic of the bots :o
+        /// </summary>
+        /// <returns></returns>
         protected abstract EnvCarRace.Action GetAction();
 
         internal string GetName() { return GetType().Name; }

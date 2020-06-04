@@ -222,7 +222,7 @@ namespace BotChallenge.Bumper
             this.bots = GetBots<Bot>(botTypes);
         }
 
-        public override float[] Loop()
+        internal override float[] Loop()
         {
             if (Visible)
             {

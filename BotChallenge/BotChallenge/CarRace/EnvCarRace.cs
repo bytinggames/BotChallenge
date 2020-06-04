@@ -12,33 +12,60 @@ namespace BotChallenge.CarRace
 {
     public class EnvCarRace : Env, MonoMethods
     {
-        public int Width { get; } = 160;
-        public int Height { get; } = 90;
-        public readonly int totalFrames = 60 * 60 * 2; // 2min
-
-        public readonly int goalCount = 5;
-        public readonly float goalRadius = 3f;
-
-        internal List<Vector2> goals;
-        
         public struct Action
         {
             /// <summary>
             /// [0,1]
+            /// 0: no acceleration
+            /// 0 ... 1: in between
+            /// 1: full acceleration
             /// </summary>
             public float accelerate;
             /// <summary>
             /// [-1,1]
+            /// -1: left steer
+            /// -1 ... 1: in between
+            /// 1: right steer
             /// </summary>
             public float steer;
             /// <summary>
             /// [0,1]
+            /// 0: no brake
+            /// 0 ... 1: in between
+            /// 1: full brake
             /// </summary>
             public float brake;
         }
 
+        /// <summary>
+        /// width of the map in meters
+        /// </summary>
+        public int Width { get; } = 160;
+        /// <summary>
+        /// height of the mapin meters
+        /// </summary>
+        public int Height { get; } = 90;
+        /// <summary>
+        /// maximum frame count it takes for one race (60fps)
+        /// </summary>
+        public readonly int totalFrames = 60 * 60 * 2; // 2min
+
+        /// <summary>
+        /// how many goals you need to reach
+        /// </summary>
+        public readonly int goalCount = 5;
+        /// <summary>
+        /// in meters
+        /// </summary>
+        public readonly float goalRadius = 3f;
+
+        internal List<Vector2> goals;
+
         int frame = 0;
 
+        /// <summary>
+        /// gets current frame
+        /// </summary>
         public int Frame => frame;
         
         internal Bot[] bots;
@@ -50,7 +77,7 @@ namespace BotChallenge.CarRace
         
         SpriteFont font;
 
-        public static Matrix matrix;
+        Matrix matrix;
 
         bool firstPlayerView;
 
@@ -78,7 +105,7 @@ namespace BotChallenge.CarRace
             firstPlayerView = bots.Length == 1;
         }
 
-        public override float[] Loop()
+        internal override float[] Loop()
         {
             if (Visible)
             {
