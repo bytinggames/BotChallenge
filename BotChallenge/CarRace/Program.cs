@@ -17,6 +17,7 @@ namespace CarRace
             Type[] bots = new Type[]
             {
                 typeof(Human),
+                //typeof(HumanWASD),
             };
 
             RunManagerTournament runManager = new RunManagerTournament(typeof(EnvCarRace), bots, bots.Length, 1, visible, OutputMode.ResultOfEveryIteration, new System.Random().Next());
