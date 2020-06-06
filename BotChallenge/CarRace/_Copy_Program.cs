@@ -21,7 +21,6 @@ namespace CarRace
             // determine which classes race against each other
             Type[] bots = new Type[]
             {
-
                 typeof(Human),
                 //typeof(HumanWASD),
                 //typeof(EmptyBot),
