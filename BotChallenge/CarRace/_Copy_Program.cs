@@ -26,7 +26,15 @@ namespace CarRace
                 //typeof(EmptyBot),
             };
 
-            RunManagerTournament runManager = new RunManagerTournament(typeof(EnvCarRace), bots, bots.Length, 1, visible, OutputMode.ResultOfEveryIteration, new System.Random().Next());
+            RunManagerTournament runManager = new RunManagerTournament(
+                typeof(EnvCarRace)
+                , bots          // participating bots
+                , bots.Length   // amount of bots per battle
+                , 1             // iterations per battle
+                , visible       // if the simulation is drawn to screen (but setting it to false currently breaks it, so yeah... x)
+                , OutputMode.ResultOfEveryIteration
+                , new System.Random().Next() // seed (currently randomized)
+                );
 
             runManager.Loop();
 
