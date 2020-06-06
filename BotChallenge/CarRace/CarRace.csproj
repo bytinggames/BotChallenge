@@ -53,8 +53,8 @@
     <Compile Include="EmptyBot.cs" />
     <Compile Include="HumanWASD.cs" />
     <Compile Include="Human.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="_Copy_Program.cs" />
   </ItemGroup>
   <ItemGroup>
