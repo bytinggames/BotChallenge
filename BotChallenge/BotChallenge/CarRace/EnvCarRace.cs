@@ -88,10 +88,12 @@ namespace BotChallenge.CarRace
 
             goals = new List<Vector2>();
 
+            Vector2 pos;
+
             int space = 4;
             for (int i = 0; i < goalCount; i++)
             {
-                Vector2 pos = Vector2.Zero;
+                pos = Vector2.Zero;
                 do
                 {
                     pos = new Vector2(constRand.Next(space, Width - space), constRand.Next(space, Height - space)) + new Vector2(0.5f);
@@ -103,6 +105,18 @@ namespace BotChallenge.CarRace
             this.bots = GetBots<Bot>(botTypes);
 
             firstPlayerView = bots.Length == 1;
+
+            int x, y;
+            x = constRand.Next(Width);
+            y = constRand.Next(Height);
+            pos = new Vector2(x + 0.5f, y + 0.5f);
+
+            float orientation = constRand.NextFloat() * MathHelper.TwoPi;
+
+            for (int i = 0; i < this.bots.Length; i++)
+            {
+                this.bots[i].Initialize(this, pos, orientation, i, goals.ToList());
+            }
         }
 
         internal override float[] Loop()
@@ -142,19 +156,6 @@ namespace BotChallenge.CarRace
             this.graphics = graphics;
             
             font = content.Load<SpriteFont>("Fonts/lato-thin-mod_10");
-
-            int x, y;
-            Vector2 pos;
-            x = constRand.Next(Width);
-            y = constRand.Next(Height);
-            pos = new Vector2(x + 0.5f, y + 0.5f);
-
-            float orientation = constRand.NextFloat() * MathHelper.TwoPi;
-
-            for (int i = 0; i < this.bots.Length; i++)
-            {
-                this.bots[i].Initialize(this, pos, orientation, i, goals.ToList());
-            }
         }
 
         void MyUpdate()

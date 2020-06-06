@@ -14,7 +14,7 @@ namespace CarRace
 {
     class Program
     {
-        const bool visible = true;
+        static readonly bool visible = false;
 
         static void Main(string[] args)
         {
@@ -31,15 +31,14 @@ namespace CarRace
                 , bots          // participating bots
                 , bots.Length   // amount of bots per battle
                 , 1             // iterations per battle
-                , visible       // if the simulation is drawn to screen (but setting it to false currently breaks it, so yeah... x)
+                , visible       // if the simulation is drawn to screen (60fps, otherwise as fast as possible)
                 , OutputMode.ResultOfEveryIteration
                 , new System.Random().Next() // seed (currently randomized)
                 );
 
             runManager.Loop();
 
-            if (visible)
-                Console.ReadLine();
+            Console.ReadLine();
         }
     }
 }
