@@ -20,6 +20,8 @@ namespace BotChallenge.Bumper
         public bool LoadFromTexture => loadFromTexture;
         public const int TOTALFRAMES = 60 * 60 * 2; // 2min
 
+        public const float FRICTION = 0.97f;
+
 
         public abstract class Bot
         {
@@ -179,6 +181,8 @@ namespace BotChallenge.Bumper
                 Vector2 realMove = pos - lastPos;
                 velocity = realMove;
             }
+
+            public virtual void Draw() { }
         }
 
         public struct Action
@@ -234,7 +238,7 @@ namespace BotChallenge.Bumper
             }
 
             float[] scores = new float[bots.Length];
-
+            /*
             List<Bot> r = new List<Bot>();
             for (int i = 0; i < bots.Length; i++)
             {
@@ -250,6 +254,18 @@ namespace BotChallenge.Bumper
             for (int i = 0; i < r.Count; i++)
             {
                 scores[r[i].Id] = i;
+            }*/
+
+            if (bots[0].timeAlive == bots[1].timeAlive)
+            {
+                scores = new float[] { 1, 1 };
+            }
+            else
+            {
+                if (bots[0].timeAlive > bots[1].timeAlive)
+                    scores = new float[] { 2, 0 };
+                else
+                    scores = new float[] { 0, 2 };
             }
 
             //for (int i = 0; i < scores.Length; i++)
@@ -319,7 +335,7 @@ namespace BotChallenge.Bumper
                     y = constRand.Next(Height) - Height / 2;
                     pos = new Vector2(x + 0.5f, y + 0.5f);
                 } while (this.bots.Any(f => f.pos == pos) || pos.Length() > RADIUS * 0.75f);
-                
+
                 this.bots[i].Initialize(this, botsList.ToArray(), map, pos, i);
             }
 
@@ -428,7 +444,7 @@ namespace BotChallenge.Bumper
                     }
                     else
                     {
-                        bots[i].velocity *= 0.97f;
+                        bots[i].velocity *= FRICTION;
                     }
                 }
             }
@@ -527,7 +543,22 @@ namespace BotChallenge.Bumper
                     float textScale = Bot.RADIUS * 2f / textSize.Length();
                     textSize *= textScale;
                     spriteBatch.DrawString(font, text, bots[i].pos - textSize / 2f, Color.Black, 0, Vector2.Zero, textScale, SpriteEffects.None, 0);
-                    
+
+                    /*
+                    float a = bots[i].Velocity.X;
+                    float b = bots[i].Velocity.Y;
+                    float x = bots[i].Pos.X;
+                    float y = bots[i].Pos.Y;
+                    float r = EnvBumper.RADIUS;
+                    float t = (float)-Math.Sqrt(a * a * (r * r - y * y) + 2 * a * b * x * y + b * b * (r * r - x * x) + a * x + b * y) / (a * a + b * b);
+                    //float t = 60f;
+                    Console.WriteLine(t);
+
+                    Vector2 predict = bots[i].Pos + bots[i].Velocity * t;
+
+                    DrawM.Vertex.DrawCircle(predict, Bot.RADIUS, Color.White, 8f);
+                    */
+                    bots[i].Draw();
                 }
             }
 

@@ -84,6 +84,7 @@ namespace BotChallenge
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Drawer.Initialize(spriteBatch);
             env.LoadContent(spriteBatch, Content, graphics);
         }
 

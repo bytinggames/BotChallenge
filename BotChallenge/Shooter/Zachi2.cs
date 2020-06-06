@@ -34,8 +34,8 @@ namespace Shooter
         protected override EnvShooter.Action GetAction()
         {
             Vector2 move_target = new Vector2(rand.Next(19), rand.Next(19));
-            
-            Vector2 aim_target = new Vector2(0,0);
+
+            Vector2 aim_target = new Vector2(0, 0);
 
 
             EnvShooter.Bot[] bots = this.enemies.ToList().FindAll(x => x.Alive).ToArray();
@@ -46,7 +46,7 @@ namespace Shooter
             if (Charge >= 0.99)
                 do_charge = false;
 
-            
+
 
             int min_col = int.MaxValue;
             int col_idx = -1;
@@ -55,7 +55,7 @@ namespace Shooter
             {
                 if (this.env.Bullets[i].Collectible)
                     continue;
-                int player_collision = BulletSim.CollidesWith(this.Pos, 0.4f, this.env.Bullets[i], this.map,120);
+                int player_collision = BulletSim2.CollidesWith(this.Pos, 0.4f, this.env.Bullets[i], this.map, 120);
                 if (player_collision > -1)
                 {
                     if (player_collision < min_col)
@@ -63,7 +63,7 @@ namespace Shooter
                         min_col = player_collision;
                         col_idx = i;
                     }
-                    
+
                 }
             }
 
@@ -77,7 +77,7 @@ namespace Shooter
                 };
                 //for (int i = 0; i < move_vecs.Length; i++)
                 //    move_vecs[i].Normalize();
-                
+
 
 
                 Vector2 point_out = Vector2.Zero;
@@ -91,7 +91,7 @@ namespace Shooter
                     int[] col_steps = new int[poses.Length];
                     for (int j = 0; j < col_steps.Length; j++)
                     {
-                        if (poses[j].X-0.4f < 1 || poses[j].X+0.4f > 19 || poses[j].Y-0.4f < 1 || poses[j].Y+0.4f > 19)
+                        if (poses[j].X - 0.4f < 1 || poses[j].X + 0.4f > 19 || poses[j].Y - 0.4f < 1 || poses[j].Y + 0.4f > 19)
                         {
                             col_steps[j] = 0;
                             continue;
@@ -101,7 +101,7 @@ namespace Shooter
                         int min_bullet_idx = -1;
                         for (int y = 0; y < this.env.Bullets.Length; y++)
                         {
-                            int c_steps = BulletSim.CollidesWith(poses[j], 0.4f, this.env.Bullets[y], this.map, 120);
+                            int c_steps = BulletSim2.CollidesWith(poses[j], 0.4f, this.env.Bullets[y], this.map, 120);
                             // closest bullet death found
                             if (c_steps > -1 && c_steps < min_bullet)
                             {
@@ -210,18 +210,18 @@ namespace Shooter
         }
     }
 
-    
-    static class BulletSim
+
+    static class BulletSim2
     {
 
 
-        public static int CollidesWith(Vector2 pos, float radius, Bullet b,bool[,] map, int steps=60)
+        public static int CollidesWith(Vector2 pos, float radius, Bullet b, bool[,] map, int steps = 60)
         {
             EnvShooter env = create_env();
             Bullet n_bullet = new Bullet(b.Pos, b.Velocity, 2982397, b.Color, env);
 
             SetValue(env, "map", map);
-            
+
 
             for (int i = 0; i < steps; i++)
             {
@@ -233,7 +233,7 @@ namespace Shooter
                     return i;
 
                 Vector2 velocity = n_bullet.Velocity * 0.99f;
-                SetValue(n_bullet,"velocity",velocity);
+                SetValue(n_bullet, "velocity", velocity);
 
                 if (velocity != Vector2.Zero)
                 {
@@ -246,7 +246,7 @@ namespace Shooter
                     if (velocity.Length() < 0.01f)
                         velocity = Vector2.Zero;
                 }
-                
+
             }
             return -1;
         }
@@ -291,7 +291,7 @@ namespace Shooter
 
         }
         */
-        static void SetValue(object s, string name,object value)
+        static void SetValue(object s, string name, object value)
         {
             var prop = s.GetType().GetField(name, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             prop.SetValue(s, value);
@@ -303,6 +303,6 @@ namespace Shooter
             return type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>));
         }
     }
-    
+
 
 }

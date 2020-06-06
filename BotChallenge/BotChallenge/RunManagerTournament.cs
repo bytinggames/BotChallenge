@@ -22,8 +22,9 @@ namespace BotChallenge
         Type[] botTypes;
         bool visible;
         OutputMode outputMode;
+        int? sameSeed;
 
-        public RunManagerTournament(Type env, Type[] bots, int botsPerBattle, int iterations, bool visible, OutputMode outputMode)
+        public RunManagerTournament(Type env, Type[] bots, int botsPerBattle, int iterations, bool visible, OutputMode outputMode, int? sameSeed = null)
         {
             if (botsPerBattle > bots.Length)
                 botsPerBattle = bots.Length;
@@ -34,6 +35,7 @@ namespace BotChallenge
             this.iterations = iterations;
             this.visible = visible;
             this.outputMode = outputMode;
+            this.sameSeed = sameSeed;
         }
 
         public void Loop()
@@ -48,6 +50,8 @@ namespace BotChallenge
 
             do
             {
+                Env.InitRand(sameSeed);
+
                 //int[] indices = new int[botsPerBattle];
                 List<Type> currentTypes = new List<Type>();
                 List<int> indices = new List<int>();

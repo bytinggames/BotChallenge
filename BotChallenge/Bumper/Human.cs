@@ -41,7 +41,15 @@ namespace Bumper
             if (Input.down.down)
                 dir.Y++;
 
+            float a = Velocity.X;
+            float b = Velocity.Y;
+            float x = Pos.X;
+            float y = Pos.Y;
+            float r = EnvBumper.RADIUS;
+            float t = (float)Math.Sqrt(a * a * (r * r - y * y) + 2 * a * b * x * y + b * b * (r * r - x * x) + a * x + b * y) / (a * a + b * b);
+            Console.WriteLine(t);
 
+            Vector2 predict = Pos + Velocity * t;
 
             return new EnvBumper.Action()
             {

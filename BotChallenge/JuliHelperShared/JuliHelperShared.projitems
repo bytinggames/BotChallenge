@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>7061ea84-d712-49ce-aec3-c2caaeb99b92</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>JuliHelperShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BytingIntro.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Camera\Camera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Content\ContentBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Content\ContentFenja.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Content\ContentLoader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Content\DynamicContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawing\DepthManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Drawing\Drawer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)G.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\Buttons\G_Button.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\Buttons\G_B_Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\Buttons\G_B_Text.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\GuiElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_Color.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_Enum.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_Label.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_NumBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_ObjSelect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_Plane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_RectangleView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_TextBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GuiElements\G_ToolTip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\Anchor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\ArrayQuery.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\BmpHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\Calculate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\CurrentUserSecurity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\Delegates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\DrawM.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\FPS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\Int2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\MeshBatch.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\MeshBatchBoneItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\MeshBatchItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\MyConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helper\Short2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Input.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\InputRecorder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\InputRecorderDeprecated.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Key.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\KeyCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\KeyMouse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\KeyP.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\KeyPad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\KeyString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\Animation\SpriteSkin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\Collision.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\CollisionResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\CollisionResult3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\Mask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\M_Circle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\M_Collection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\M_Point.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\M_Polygon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\M_Rectangle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\NewSprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\Sprite.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\SpriteN.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\SpriteSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\SpriteSourceRect.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\SpriteSourceSheet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Masks\SpriteSourceStatic.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Particles\Emitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Particles\Particle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Particles\ParticleSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SoundPlayer\MyChannel32.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SoundPlayer\SoundPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SoundPlayer\StereoFloatSampleChunkConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\AnimationClip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\AnimationClipReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Animation\AnimatedModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Animation\AnimationPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Animation\Bone.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Camera3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\ModelExtra.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\ModelExtraReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\ModelHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Renderable\Renderable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Renderable\R_Animation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Renderable\R_Model.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Renderable\R_MyMesh.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\Renderable\R_MyModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThreeD\VertexHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ToBePatched.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)lib\NAudio.dll" />
+    <None Include="$(MSBuildThisFileDirectory)lib\NVorbis.dll" />
+    <None Include="$(MSBuildThisFileDirectory)lib\NVorbis.NAudioSupport.dll" />
+  </ItemGroup>
+</Project>

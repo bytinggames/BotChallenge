@@ -33,6 +33,8 @@ namespace BotChallenge
                 Console.Write("\n Battle: ");
                 for (int i = 0; i < botTypes.Length; i++)
                     Console.Write(botTypes[i].Name + " " + (i < botTypes.Length - 1 ? " vs " : ""));
+
+                //Console.ReadLine();
             }
 
 
