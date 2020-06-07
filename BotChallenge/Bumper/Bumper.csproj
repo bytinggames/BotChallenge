@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotChallenge\BotChallenge.csproj">
-      <Project>{B2831572-CAEF-4A39-9FF5-FB731EA05B73}</Project>
+      <Project>{b2831572-caef-4a39-9ff5-fb731ea05b73}</Project>
       <Name>BotChallenge</Name>
     </ProjectReference>
   </ItemGroup>

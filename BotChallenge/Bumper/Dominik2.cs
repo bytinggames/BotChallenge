@@ -18,14 +18,7 @@ namespace Bumper
             return Color.Magenta;
         }
 
-<<<<<<< HEAD
-        public Dominik2()
-        {
 
-        }
-
-=======
->>>>>>> 88e0a94df6ec867171c7a3406eb0266d9760f99e
         protected float getAngle(Vector2 vec)
         {
             return (float) Math.Atan2(vec.Y, vec.X); ;
