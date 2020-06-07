@@ -43,7 +43,7 @@ namespace BotChallenge.CarRace
         /// how hard it turns
         /// </summary>
         public readonly float handling = 1f;
-        
+
         public readonly float airFriction = 0.01f;
         public readonly float rollingFriction = 0.1f;
 
@@ -67,7 +67,7 @@ namespace BotChallenge.CarRace
         /// </summary>
         public int goalIndex { get; private set; } = 0;
 
-        
+
         #region dynamic physics variables
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace BotChallenge.CarRace
         public float orientationAngularVelocity { get; private set; }
 
         private float _orientation;
-        
+
         #endregion
 
         List<Vector2> maskSourceVertices;
@@ -172,6 +172,8 @@ namespace BotChallenge.CarRace
         internal bool control;
         internal bool Alive = true;
 
+        private string name;
+
         public Bot(bool control = true)
         {
             this.control = control;
@@ -182,6 +184,8 @@ namespace BotChallenge.CarRace
 
             if (!control)
                 positionX += 10;
+
+            name = GetName();
         }
 
         internal void Initialize(EnvCarRace env, Vector2 pos, float orientation, int id, List<Vector2> goals)
@@ -191,10 +195,10 @@ namespace BotChallenge.CarRace
             this.orientation = orientation;
             this.id = id;
             this.goals = goals;
-            
+
             rand = Env.constRand;
         }
-        
+
         /// <summary>
         /// if currently static friction is happening on wheels vs ground (or false: kinetic friction -> drifting)
         /// </summary>
@@ -225,7 +229,7 @@ namespace BotChallenge.CarRace
                 throttlePedal = Math.Min(1f, Math.Max(0f, action.accelerate));
 
                 brakePedal = Math.Min(1f, Math.Max(0f, action.brake));
-                
+
                 float cHandling = handling;
                 if (velocity > 0)
                 {
@@ -236,7 +240,7 @@ namespace BotChallenge.CarRace
 
                     turnSpeed = Math.Min(1f, Math.Max(-1f, action.steer)) * cHandling * velocity;
                 }
-                
+
                 //handBrake = Input.space.down;
             }
             else
@@ -248,7 +252,7 @@ namespace BotChallenge.CarRace
             bool oldStaticFriction = staticFriction;
             staticFriction = !handBrake
                 && (Math.Abs(velocityLong) > Math.Abs(velocityLat) * 1.2f && Math.Abs(orientationAngularVelocity * velocity) < 300f);
-            
+
             if (oldStaticFriction && !staticFriction)
             {
                 // begin drift
@@ -293,7 +297,7 @@ namespace BotChallenge.CarRace
             Vector2 rollingResistanceForceV = -rollingFriction * velocityLongV;
 
             accelerationV = thrustForceV + dragForceV + rollingResistanceForceV + wheelLatForceV;
-            
+
             if (staticFriction)
             {
                 // steering is more accurate and less "spongy"
@@ -339,12 +343,15 @@ namespace BotChallenge.CarRace
             {
                 driftLines[i].Draw(driftColor);
             }
-            
+
             mask.Draw(GetColor());
 
             DrawM.Vertex.DrawLineThin(positionV, positionV + orientationV * length / 2f, Color.Black);
+
+            if (env.bots.Length > 1)
+                env.font.Draw(name, Anchor.Bottom(positionV - new Vector2(0, 1.5f)), GetOpaqueColor(), new Vector2(0.2f));
         }
-        
+
         internal EnvCarRace.Action GetInternalAction()
         {
             return GetAction();
@@ -359,5 +366,12 @@ namespace BotChallenge.CarRace
         internal Color GetInternalColor() { return GetColor(); }
 
         protected abstract Color GetColor();
+
+        Color GetOpaqueColor()
+        {
+            Color c = GetColor();
+            c.A = 255;
+            return c;
+        }
     }
 }
