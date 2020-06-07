@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots_private\Dominik.cs" />
     <Compile Include="EmptyBot.cs" />
     <Compile Include="HumanWASD.cs" />
     <Compile Include="Human.cs" />
@@ -66,5 +67,6 @@
       <Name>BotChallenge</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
