@@ -344,7 +344,7 @@ namespace BotChallenge.CarRace
                 driftLines[i].Draw(driftColor);
             }
 
-            mask.Draw(GetColor());
+            mask.Draw(control ? GetColor() : Color.Black);
 
             DrawM.Vertex.DrawLineThin(positionV, positionV + orientationV * length / 2f, Color.Black);
 

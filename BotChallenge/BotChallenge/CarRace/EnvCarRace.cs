@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using JuliHelper;
+using System.Diagnostics;
 
 namespace BotChallenge.CarRace
 {
@@ -49,6 +50,12 @@ namespace BotChallenge.CarRace
         /// maximum frame count it takes for one race (60fps)
         /// </summary>
         public readonly int totalFrames = 60 * 60 * 2; // 2min
+
+        /// <summary>
+        /// maximum time in ms a bot can take for his GetAction update method
+        /// if he takes longer his control gets taken away.
+        /// </summary>
+        public readonly int getActionMaxTime = 16;
 
         /// <summary>
         /// how many goals you need to reach
@@ -176,10 +183,18 @@ namespace BotChallenge.CarRace
 
             Action[] actions = new Action[bots.Length];
 
+            Stopwatch sw = new Stopwatch();            
             for (int i = 0; i < bots.Length; i++)
             {
                 if (bots[i].Alive && bots[i].control)
+                {
+                    sw.Restart();
                     actions[i] = bots[i].GetInternalAction();
+                    sw.Stop();
+
+                    if (sw.ElapsedMilliseconds > getActionMaxTime)
+                        bots[i].control = false;
+                }
             }
 
             ExecuteActions(actions);
