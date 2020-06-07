@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bots_private\Dominik.cs" />
     <Compile Include="EmptyBot.cs" />
     <Compile Include="HumanWASD.cs" />
     <Compile Include="Human.cs" />
