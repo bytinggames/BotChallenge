@@ -199,6 +199,13 @@ namespace BotChallenge.CarRace
             rand = Env.constRand;
         }
 
+        internal void InitializeCustomInternal()
+        {
+            InitializeCustom();
+        }
+
+        protected virtual void InitializeCustom() { }
+
         /// <summary>
         /// if currently static friction is happening on wheels vs ground (or false: kinetic friction -> drifting)
         /// </summary>

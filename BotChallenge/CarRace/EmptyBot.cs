@@ -11,6 +11,11 @@ namespace CarRace
 {
     class EmptyBot : Bot
     {
+        protected override void InitializeCustom()
+        {
+            // initialization code - run once per start of a race
+        }
+
         // this function is called every frame
         protected override EnvCarRace.Action GetAction()
         {

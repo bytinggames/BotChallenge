@@ -140,7 +140,12 @@ namespace BotChallenge.CarRace
             {
                 this.bots[i].Initialize(this, pos, orientation, i, goals.ToList());
             }
-            
+
+            for (int i = 0; i < this.bots.Length; i++)
+            {
+                this.bots[i].InitializeCustomInternal();
+            }
+
             Drawer.roundPositionTo = 0f;
         }
 
