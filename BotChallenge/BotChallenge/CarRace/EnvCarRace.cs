@@ -75,7 +75,7 @@ namespace BotChallenge.CarRace
 
         GraphicsDeviceManager graphics;
         
-        SpriteFont font;
+        internal SpriteFont font;
 
         Matrix matrix;
 
@@ -117,6 +117,8 @@ namespace BotChallenge.CarRace
             {
                 this.bots[i].Initialize(this, pos, orientation, i, goals.ToList());
             }
+            
+            Drawer.roundPositionTo = 0f;
         }
 
         internal override float[] Loop()
@@ -145,7 +147,7 @@ namespace BotChallenge.CarRace
             }
             else
             {
-                scores[0] = bots[0].frameTime;
+                scores[0] = -bots[0].frameTime;
             }
             
             return scores;
@@ -269,7 +271,6 @@ namespace BotChallenge.CarRace
             {
                 if (i + 1 < goals.Count)
                 {
-
                     DrawM.Vertex.DrawLine(goals[i], goals[i + 1], Color.DeepSkyBlue, 0.2f);
                 }
 
