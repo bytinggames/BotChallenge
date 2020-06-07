@@ -14,7 +14,7 @@ namespace CarRace
 {
     class Program
     {
-        static readonly bool visible = false;
+        static readonly bool visible = true;
 
         static void Main(string[] args)
         {
