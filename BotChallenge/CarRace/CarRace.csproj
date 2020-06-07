@@ -70,9 +70,11 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>cd "..\..\UploadBot\"
+    <PostBuildEvent>if $(Configuration) == Release (
+cd "..\..\UploadBot\"
 echo %25cd%25
-start "" "UploadBot.exe"</PostBuildEvent>
+start "" "UploadBot.exe"
+)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
