@@ -26,6 +26,9 @@ namespace BotChallenge
 
         public RunManagerTournament(Type env, Type[] bots, int botsPerBattle, int iterations, bool visible, OutputMode outputMode, int? sameSeed = null)
         {
+            if (sameSeed.HasValue)
+                Console.WriteLine("seed: " + sameSeed.Value);
+
             if (botsPerBattle > bots.Length)
                 botsPerBattle = bots.Length;
 

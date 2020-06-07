@@ -94,10 +94,26 @@ namespace BotChallenge.CarRace
             for (int i = 0; i < goalCount; i++)
             {
                 pos = Vector2.Zero;
+                bool col;
                 do
                 {
                     pos = new Vector2(constRand.Next(space, Width - space), constRand.Next(space, Height - space)) + new Vector2(0.5f);
-                } while (goals.Any(f => Vector2.Distance(pos, f) < 3f));
+
+                    col = false;
+                    if (i > 1)
+                    {
+                        M_Polygon line = new M_Polygon(Vector2.Zero, new List<Vector2>() { goals[i - 1], pos }, true);
+                        for (int j = 1; j < goals.Count; j++)
+                        {
+                            M_Polygon line2 = new M_Polygon(Vector2.Zero, new List<Vector2>() { goals[j], goals[j - 1] }, true);
+                            if (line.ColPolygon(line2))
+                            {
+                                col = true;
+                                break;
+                            }
+                        }
+                    }
+                } while (col || goals.Any(f => Vector2.Distance(pos, f) < 3f));
 
                 goals.Add(pos);
             }
