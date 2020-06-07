@@ -350,6 +350,8 @@ namespace BotChallenge.CarRace
 
             if (env.bots.Length > 1)
                 env.font.Draw(name, Anchor.Bottom(positionV - new Vector2(0, 1.5f)), GetOpaqueColor(), new Vector2(0.2f));
+
+            DrawCustom();
         }
 
         internal EnvCarRace.Action GetInternalAction()
@@ -366,6 +368,8 @@ namespace BotChallenge.CarRace
         internal Color GetInternalColor() { return GetColor(); }
 
         protected abstract Color GetColor();
+
+        protected virtual void DrawCustom() { }
 
         Color GetOpaqueColor()
         {

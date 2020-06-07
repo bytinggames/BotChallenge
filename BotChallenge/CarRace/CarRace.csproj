@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Julian.cs" />
     <Compile Include="EmptyBot.cs" />
     <Compile Include="HumanWASD.cs" />
     <Compile Include="Human.cs" />

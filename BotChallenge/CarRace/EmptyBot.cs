@@ -35,5 +35,12 @@ namespace CarRace
         {
             return Color.White; // determine your beautiful look
         }
+
+        protected override void DrawCustom()
+        {
+            DrawM.Vertex.DrawCircleOutline(positionV, 10f, Color.White * 0.5f, 8f);
+            DrawM.Vertex.DrawLineThin(positionV, this.currentGoalV, Color.White * 0.5f);
+            // DrawM.Vertex....
+        }
     }
 }
