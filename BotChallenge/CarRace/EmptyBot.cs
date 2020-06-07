@@ -25,6 +25,7 @@ namespace CarRace
             
             // type this. to see what you have access to
             //this.<>
+            //this.currentGoalV f.ex.
 
             return action;
         }
