@@ -58,7 +58,7 @@ namespace BotChallenge.CarRace
         /// <summary>
         /// current goal for this bot
         /// </summary>
-        protected Vector2 currentGoalV => goals[goalIndex];
+        protected Vector2 currentGoalV => goalIndex < goals.Count ? goals[goalIndex] : Vector2.Zero;
 
         #endregion
 
