@@ -147,7 +147,7 @@ namespace BotChallenge.CarRace
             }
             else
             {
-                scores[0] = bots[0].frameTime;
+                scores[0] = -bots[0].frameTime;
             }
             
             return scores;

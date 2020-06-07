@@ -53,17 +53,24 @@ namespace BotChallenge
                 env.Visible = Visible;
 
                 float[] scores = env.Loop();
-                for (int j = 0; j < scores.Length; j++)
+                if (scores.Length > 1)
                 {
-                    for (int k = 0; k < scores.Length; k++)
+                    for (int j = 0; j < scores.Length; j++)
                     {
-                        if (k != j)
+                        for (int k = 0; k < scores.Length; k++)
                         {
-                            if (scores[j] > scores[k])
-                                globalScores[j]++; //score for every enemy, which has less points than you
+                            if (k != j)
+                            {
+                                if (scores[j] > scores[k])
+                                    globalScores[j]++; //score for every enemy, which has less points than you
+                            }
                         }
+                        //globalScores[j] += scores[j];
                     }
-                    //globalScores[j] += scores[j];
+                }
+                else
+                {
+                    globalScores[0] = scores[0];
                 }
 
                 if (outputMode >= OutputMode.ResultOfEveryIteration)

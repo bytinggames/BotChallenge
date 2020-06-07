@@ -78,17 +78,25 @@ namespace BotChallenge
                     }
                 }
 
-                for (int i = 0; i < scores.Length; i++)
+                if (scores.Length > 1)
                 {
-                    int index = indices[i];
-
-                    for (j = 0; j < scores.Length; j++)
+                    for (int i = 0; i < scores.Length; i++)
                     {
-                        if (i != j && scores[i] > scores[j])
+                        int index = indices[i];
+
+                        for (j = 0; j < scores.Length; j++)
                         {
-                            totalScores[index]++;
+                            if (i != j && scores[i] > scores[j])
+                            {
+                                totalScores[index]++;
+                            }
                         }
                     }
+                }
+                else
+                {
+                    int index = indices[0];
+                    totalScores[index] += scores[0];
                 }
 
                 if (!visible)
