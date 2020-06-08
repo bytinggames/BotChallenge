@@ -355,15 +355,24 @@ namespace BotChallenge.CarRace
 
             DrawM.Vertex.DrawLineThin(positionV, positionV + orientationV * length / 2f, Color.Black);
 
-            if (env.bots.Length > 1)
+            //if (env.bots.Length > 1)
                 env.font.Draw(name, Anchor.Bottom(positionV - new Vector2(0, 1.5f)), GetOpaqueColor(), new Vector2(0.2f));
 
-            DrawCustom();
+            //DrawCustom();
         }
 
         internal EnvCarRace.Action GetInternalAction()
         {
-            return GetAction();
+            // disqualify if thrown exception
+            try
+            {
+                return GetAction();
+            }
+            catch
+            {
+                this.control = false;
+                return new EnvCarRace.Action();
+            }
         }
         /// <summary>
         /// this function is called every frame. Here happens the magic of the bots :o

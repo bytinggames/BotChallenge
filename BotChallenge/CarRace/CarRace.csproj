@@ -50,7 +50,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Julian.cs" />
+    <Compile Include="Bots\2020-06-07_17-20-11_Niklas.cs" />
+    <Compile Include="Bots\2020-06-07_17-21-23_Zachi.cs" />
+    <Compile Include="Bots\2020-06-07_17-22-07_SneakyBot.cs" />
+    <Compile Include="Bots\2020-06-07_17-22-30_shorxy.cs" />
+    <Compile Include="Bots\2020-06-07_17-22-53_KeipBot.cs" />
+    <Compile Include="Bots\2020-06-07_17-24-53_Julian_1.cs" />
+    <Compile Include="Bots\2020-06-07_17-29-11_SchleuderNator.cs" />
+    <Compile Include="Bots\2020-06-07_17-29-26_Dominik.cs" />
+    <Compile Include="Bots_2\2020-06-07_19-41-04_Niklas.cs" />
+    <Compile Include="Bots_2\2020-06-07_19-41-19_ZachiSlow.cs" />
+    <Compile Include="Bots_2\2020-06-07_19-41-41_KeipBot.cs" />
+    <Compile Include="Bots_2\2020-06-07_19-43-46_Dominik.cs" />
+    <Compile Include="Bots_2\2020-06-07_19-44-28_Julian_2.cs" />
+    <Compile Include="Bots_2\2020-06-07_19-50-19_shorxy.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-11-30_Shorxy.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-19-09_Niklas.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-19-24_Julian_3.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-22-52_ZachisEhrenBot - Kopieren - Kopieren %282%29.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-22-52_ZachisEhrenBot - Kopieren - Kopieren %283%29.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-22-52_ZachisEhrenBot - Kopieren - Kopieren.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-22-52_ZachisEhrenBot - Kopieren.cs" />
+    <Compile Include="Bots_3\2020-06-07_23-22-52_ZachisEhrenBot.cs" />
+    <Compile Include="Julian_3.cs" />
     <Compile Include="EmptyBot.cs" />
     <Compile Include="HumanWASD.cs" />
     <Compile Include="Human.cs" />

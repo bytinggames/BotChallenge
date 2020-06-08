@@ -127,7 +127,7 @@ namespace BotChallenge.CarRace
 
             this.bots = GetBots<Bot>(botTypes);
 
-            firstPlayerView = bots.Length == 1;
+            firstPlayerView = false;// bots.Length == 1;
 
             int x, y;
             x = constRand.Next(Width);
